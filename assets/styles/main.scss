@@ -1,0 +1,18 @@
+html, body, #__nuxt {
+    height: 100vh;
+    width: 100vw;
+    font-family: 'Poppins', sans-serif;
+}
+
+.p-button.p-button--success {
+    @apply bg-jungle-green transition rounded-lg py-4 px-5 !important;
+
+    &:hover {
+        @apply  opacity-60;
+    }
+
+    .p-button-icon {
+        font-size: 1.5rem;
+        @apply mr-3
+    }
+}

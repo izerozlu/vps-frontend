@@ -1,7 +1,0 @@
-<template>
-	<section class="login">
-		<h1>Login Page</h1>
-	</section>
-</template>
-
-<script setup lang="ts"></script>
