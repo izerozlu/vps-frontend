@@ -1,38 +1,40 @@
 <template>
-  <div class="dashbaord__card--authorization dashboard__card">
-    <h2 class="dashboard__title">
-      {{ t('authentication-and-authorization') }}
-    </h2>
-    <div class="dashboard__actions actions">
-      <button class="dashboard__action group" type="button">
-        {{ t('groups') }}
-        <RightArrowSvg class="action__arrow" />
-      </button>
-      <button class="dashboard__action group" type="button">
-        {{ t('users') }}
-        <RightArrowSvg class="action__arrow" />
-      </button>
+  <div class="dashboard">
+    <div class="dashbaord__card--authorization dashboard__card">
+      <h2 class="dashboard__title">
+        {{ t('authentication-and-authorization') }}
+      </h2>
+      <div class="dashboard__actions actions">
+        <button class="dashboard__action group" type="button">
+          {{ t('groups') }}
+          <RightArrowSvg class="action__arrow" />
+        </button>
+        <button class="dashboard__action group" type="button">
+          {{ t('users') }}
+          <RightArrowSvg class="action__arrow" />
+        </button>
+      </div>
     </div>
-  </div>
-  <div class="dashboard__card dashboard-card__vps">
-    <h2 class="dashboard__title">{{ t('vps') }}</h2>
-    <div class="dashboard__actions dashboard__actions--compact">
-      <button class="dashboard__action group" type="button">
-        {{ t('patient-records') }}
-        <RightArrowSvg class="action__arrow" />
-      </button>
-      <button class="dashboard__action group" type="button">
-        {{ t('patient-diagnoses') }}
-        <RightArrowSvg class="action__arrow" />
-      </button>
-      <button class="dashboard__action group" type="button">
-        {{ t('patient-videos') }}
-        <RightArrowSvg class="action__arrow" />
-      </button>
-      <button class="dashboard__action group" type="button">
-        {{ t('video-tags') }}
-        <RightArrowSvg class="action__arrow" />
-      </button>
+    <div class="dashboard__card dashboard-card__vps">
+      <h2 class="dashboard__title">{{ t('vps') }}</h2>
+      <div class="dashboard__actions dashboard__actions--compact">
+        <NuxtLink class="dashboard__action group" :to="ERoutes.PATIENT_LIST">
+          {{ t('patient-records') }}
+          <RightArrowSvg class="action__arrow" />
+        </NuxtLink>
+        <button class="dashboard__action group" type="button">
+          {{ t('patient-diagnoses') }}
+          <RightArrowSvg class="action__arrow" />
+        </button>
+        <button class="dashboard__action group" type="button">
+          {{ t('patient-videos') }}
+          <RightArrowSvg class="action__arrow" />
+        </button>
+        <button class="dashboard__action group" type="button">
+          {{ t('video-tags') }}
+          <RightArrowSvg class="action__arrow" />
+        </button>
+      </div>
     </div>
   </div>
 </template>

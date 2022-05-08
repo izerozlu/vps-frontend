@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-lotion flex h-full w-full with-sidenav-layout">
+  <div class="bg-lotion flex with-sidenav-layout">
     <aside
       class="min-w-[300px] py-10 px-5 with-sidenav-layout__sidenav sidenav"
     >
