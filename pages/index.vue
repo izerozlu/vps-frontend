@@ -54,15 +54,7 @@ definePageMeta({
   layout: 'with-sidenav',
 });
 
-onMounted(() => {
-  sidenavStore.items = [
-    {
-      label: t('dashboard'),
-      icon: 'dashboard',
-      route: ERoutes.DASHBOARD,
-    },
-  ];
-});
+onMounted(() => setupSidenavStore(sidenavStore, t));
 </script>
 
 <style scoped lang="scss">
@@ -97,7 +89,6 @@ onMounted(() => {
 
 <i18n lang="yaml">
 tr:
-  dashboard: Dashboard
   authentication-and-authorization: Kimlik Doğrulama ve Yetkilendirme
   groups: Gruplar
   users: Kullanıcılar
