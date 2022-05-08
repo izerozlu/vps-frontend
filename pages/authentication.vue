@@ -1,6 +1,6 @@
 <template>
   <section
-    class="authentication w-full h-full"
+    class="h-full w-full authentication"
     :class="{ 'opacity-60': isLoading }"
   >
     <ProgressBar
@@ -10,18 +10,10 @@
       style="height: 0.5em"
     />
     <form
-      class="authentication__form flex flex-col justify-center items-center w-full h-full"
+      class="flex flex-col h-full w-full authentication__form justify-center items-center"
       @submit.prevent="login"
     >
-      <div
-        class="authentication__header header flex justify-center items-center mb-20"
-      >
-        <LogoSvg class="header__logo mr-4" />
-        <h1 class="header__title text-2xl font-bold">
-          <span class="text-awesome">medi</span
-          ><span class="text-american-purple">qu</span>
-        </h1>
-      </div>
+      <BrandName />
       <div class="authentication__username authentication__input-field">
         <label class="authentication__label" for="username">
           Kullanıcı Adı
@@ -43,7 +35,7 @@
         />
       </div>
       <Button
-        class="authentication__submit-button p-button--success"
+        class="p-button--success authentication__submit-button"
         label="Oturum Aç"
         type="submit"
         icon="pi pi-check-circle"
@@ -53,9 +45,12 @@
 </template>
 
 <script setup lang="ts">
-import LogoSvg from 'assets/icons/logo.svg?component';
 import useAuthenticationStore from '@/store/authentication';
-import ERoutes from '~~/enums/routes';
+import ERoutes from '@/enums/routes';
+
+definePageMeta({
+  title: 'VPS Giriş',
+});
 
 const router = useRouter();
 const authenticationStore = useAuthenticationStore();
@@ -77,18 +72,18 @@ const login = async () => {
 
   if (data.value.status === 'success') {
     authenticationStore.login();
-    router.push(ERoutes.PATIENT_LIST);
+    router.push(ERoutes.DASHBOARD);
   }
 };
 </script>
 
 <style lang="scss">
 .authentication__input-field {
-  @apply mb-6 flex flex-col w-[610px];
+  @apply flex flex-col mb-6 w-[610px];
 }
 
 .authentication__label {
-  @apply text-label text-american-purple font-bold mb-3;
+  @apply font-bold text-label text-american-purple mb-3;
 }
 
 .authentication__input {

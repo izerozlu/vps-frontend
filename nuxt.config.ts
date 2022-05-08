@@ -5,11 +5,11 @@ import svgLoader from 'vite-svg-loader';
 export default defineNuxtConfig({
   modules: ['@pinia/nuxt', 'nuxt-windicss'],
   css: [
+    '~/assets/styles/main.scss',
+    '~/assets/styles/fonts.scss',
     'primevue/resources/themes/mdc-light-indigo/theme.css',
     'primevue/resources/primevue.css',
     'primeicons/primeicons.css',
-    '~/assets/styles/main.scss',
-    '~/assets/styles/fonts.scss',
   ],
   build: {
     transpile: ['primevue'],

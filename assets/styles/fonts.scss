@@ -15,6 +15,16 @@
   src: local(''), url('../assets/fonts/poppins-400.woff2') format('woff2'),
     url('../assets/fonts/poppins-400.woff2') format('woff');
 }
+
+/* poppins-600 - latin */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  src: local(''), url('../assets/fonts/poppins-600.woff2') format('woff2'),
+    url('../assets/fonts/poppins-600.woff') format('woff');
+}
+
 /* poppins-700 - latin */
 @font-face {
   font-family: 'Poppins';
