@@ -1,7 +1,7 @@
 <template>
   <div class="bg-lotion flex h-full w-full with-sidenav-layout">
     <aside
-      class="min-w-[300px] py-10 px-5 shadow-2xl with-sidenav-layout__sidenav sidenav"
+      class="min-w-[300px] py-10 px-5 with-sidenav-layout__sidenav sidenav"
     >
       <BrandName class="mb-16 with-sidenav-layout__brand-name" />
       <SidenavItem
@@ -26,5 +26,9 @@ const sidenavStore = useSidenavStore();
 <style lang="scss" scoped>
 .with-sidenav-layout :deep(.brand-name__title) {
   @apply text-logo;
+}
+
+.with-sidenav-layout__sidenav {
+  box-shadow: 18px 4px 35px 0px rgba(0, 0, 0, 0.02);
 }
 </style>

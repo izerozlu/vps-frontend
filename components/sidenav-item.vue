@@ -26,7 +26,6 @@
 <script setup lang="ts">
 import RightArrowSvg from '@/assets/icons/right-arrow.svg?component';
 import ISidenavItem from '@/interfaces/sidenav-item';
-import ERoutes from '~~/enums/routes';
 
 const route = useRoute();
 
@@ -35,7 +34,7 @@ const props = defineProps<{ item: ISidenavItem }>();
 // Icon importing resolution is taken from https://github.com/jpkleemans/vite-svg-loader/issues/19#issuecomment-902575584 via https://github.com/MuzafferDede
 const icon = computed(() => {
   return defineAsyncComponent(
-    () => import(`/assets/icons/${props.item.icon}.svg?component`)
+    () => import(`../assets/icons/${props.item.icon}.svg?component`)
   );
 });
 

@@ -3,7 +3,7 @@ import svgLoader from 'vite-svg-loader';
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  modules: ['@pinia/nuxt', 'nuxt-windicss'],
+  modules: ['@pinia/nuxt', 'nuxt-windicss', '@intlify/nuxt3'],
   css: [
     '~/assets/styles/main.scss',
     '~/assets/styles/fonts.scss',
@@ -18,5 +18,11 @@ export default defineNuxtConfig({
   // https://github.com/nuxt-community/svg-module/issues/86#issuecomment-944341678
   vite: {
     plugins: [svgLoader()],
+  },
+  // @ts-ignore
+  intlify: {
+    vueI18n: {
+      locale: 'tr',
+    },
   },
 });

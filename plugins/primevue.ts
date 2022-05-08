@@ -10,5 +10,4 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component('InputText', InputText);
   nuxtApp.vueApp.component('Button', Button);
   nuxtApp.vueApp.component('ProgressBar', ProgressBar);
-  nuxtApp.vueApp.component('Card', Card);
 });
