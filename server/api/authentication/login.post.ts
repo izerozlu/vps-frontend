@@ -11,11 +11,10 @@ export default defineEventHandler(async (event) => {
     },
   });
   const result = await response.json();
-  setCookie(
-    event,
-    EAuthentication.IS_LOGGED_IN,
-    JSON.stringify(response.status === 200)
-  );
+  if (response.status === 200) {
+    setCookie(event, EAuthentication.IS_LOGGED_IN, 'true');
+    setCookie(event, EAuthentication.USERNAME, body.username);
+  }
 
   return { ...result, status: response.status === 200 ? 'success' : 'fail' };
 });

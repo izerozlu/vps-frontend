@@ -6,6 +6,7 @@ const useSidenavStore = defineStore('sidenav', {
   state: () => {
     return {
       items: [] as ISidenavItem[],
+      pageTitle: '',
     };
   },
 });

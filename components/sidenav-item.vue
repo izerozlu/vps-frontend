@@ -1,8 +1,8 @@
 <template>
-  <button
+  <NuxtLink
     class="rounded-lg cursor-pointer flex font-bold text-base w-full p-5 sidenav-item items-center hover:opacity-75 active:opacity-90"
     :class="{ 'sidenav-item--active bg-american-purple': isActive }"
-    type="button"
+    :to="item.route"
   >
     <!-- Icon importing resolution is taken from https://github.com/jpkleemans/vite-svg-loader/issues/19#issuecomment-902575584 via https://github.com/MuzafferDede -->
     <component
@@ -20,7 +20,7 @@
       class="h-3 fill-white w-6 sidenav-item__active-indicator"
       v-if="isActive"
     />
-  </button>
+  </NuxtLink>
 </template>
 
 <script setup lang="ts">

@@ -61,17 +61,10 @@ const isLoading = ref(false);
 
 const login = async () => {
   isLoading.value = true;
-  const { data } = await useFetch<{ status: 'success' | 'fail' }>(
-    '/api/authentication/login',
-    {
-      method: 'POST',
-      body: { username: username.value, password: password.value },
-    }
-  );
+  await authenticationStore.login(username.value, password.value);
   isLoading.value = false;
 
-  if (data.value.status === 'success') {
-    authenticationStore.login();
+  if (authenticationStore.isLoggedIn) {
     router.push(ERoutes.DASHBOARD);
   }
 };
