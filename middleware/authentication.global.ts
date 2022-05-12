@@ -4,7 +4,7 @@ import ERoutes from '@/enums/routes';
 export default defineNuxtRouteMiddleware((to, from) => {
   const isLoggedInCookie = useCookie(EAuthentication.IS_LOGGED_IN);
 
-  if (!isLoggedInCookie.value && to.name !== 'authentication') {
+  if (!isLoggedInCookie.value && to.path !== ERoutes.AUTHENTICATION) {
     return navigateTo(ERoutes.AUTHENTICATION);
   }
 

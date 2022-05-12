@@ -11,7 +11,7 @@ const setupSidenavStore = (pageTitle?: string) => {
     {
       label: t('admin'),
       icon: 'dashboard',
-      route: ERoutes.DASHBOARD,
+      route: ERoutes.ADMIN_BOARD,
     },
   ];
 };

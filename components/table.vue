@@ -10,9 +10,7 @@
   >
     <Column
       :class="
-        compactColumns?.includes(column.field)
-          ? 'min-w-[180px]'
-          : 'min-w-[240px]'
+        column.isCompact ? 'min-w-[180px] max-w-[180px]' : 'min-w-[240px]'
       "
       :frozen="frozenColumns?.includes(column.field)"
       :field="column.field"
@@ -36,11 +34,10 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  columns: { field: string; header: string }[];
+  columns: { field: string; header: string; isCompact?: boolean }[];
   data: any[];
   isCompact?: boolean;
   frozenColumns?: string[];
-  compactColumns?: string[];
 }>();
 </script>
 

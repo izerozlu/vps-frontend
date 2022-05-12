@@ -27,8 +27,6 @@
       :data="filteredPatients"
       :columns="columns"
       :is-compact="true"
-      :frozen-columns="['name', 'lastName']"
-      :compact-columns="['name', 'lastName']"
     />
   </div>
 </template>
@@ -38,16 +36,16 @@ import { useI18n } from 'vue-i18n';
 
 import usePatientStore from '@/store/patient';
 import IPatient from '@/interfaces/patient';
-import useSidenavStore from '@/store/sidenav';
+import ERoutes from '~~/enums/routes';
 
 definePageMeta({
   title: 'Patient List',
   layout: 'with-sidenav',
+  alias: ERoutes.PATIENT_LIST,
 });
 
 const { t } = useI18n();
 
-const sidenavStore = useSidenavStore();
 const patientStore = usePatientStore();
 
 const searchQuery = ref('');
@@ -57,22 +55,22 @@ patientStore.list = data.value;
 
 // prettier-ignore
 const columns = [
-  { field: 'name', header: t('patient-name') },
-  { field: 'lastName', header: t('patient-last-name') },
+  { field: 'name', header: t('patient-name'), icCompact: true },
+  { field: 'lastName', header: t('patient-last-name'), isCompact: true },
   { field: 'tckn', header: t('id-no') },
   { field: 'birthDate', header: t('birth-date') },
-  { field: 'age', header: t('age') },
-  { field: 'gender', header: t('gender') },
+  { field: 'age', header: t('age'),isCompact: true },
+  { field: 'gender', header: t('gender') ,isCompact: true},
   { field: 'martialStatus', header: t('martial-status') },
   { field: 'education', header: t('education') },
   { field: 'profession', header: t('profession') },
   { field: 'salaryRange', header: t('salary-range') },
-  { field: 'medicinesCurrentlyUsed', header: t('medicines-currently-used') },
+  { field: 'medicinesCurrentlyUsed', header: t('medicines-currently-used'),isCompact: true },
   { field: 'alcoholUsage', header: t('alcohol-usage') },
-  { field: 'useDrugs', header: t('use-drugs') },
+  { field: 'useDrugs', header: t('use-drugs'),isCompact: true },
   { field: 'isPsychiatryInChildhood', header: t('is-psychiatry-in-childhood') },
   { field: 'psychiatryTime', header: t('psychiatry-time') },
-  { field: 'isDiagnosisOfHyperactivityInChildhood', header: t('is-diagnosis-of-hyperactivity-in-childhood') },
+  { field: 'isDiagnosisOfHyperactivityInChildhood', header: t('is-diagnosis-of-hyperactivity-in-childhood') ,isCompact: true},
   { field: 'hyperactivityMedicineName', header: t('hyperactivity-medicine-name') },
   { field: 'hyperactivityMedicineTime', header: t('hyperactivity-medicine-time') },
   { field: 'motherEducation', header: t('mother-education') },
@@ -84,18 +82,16 @@ const columns = [
 
 // Computed
 
+// This bad boi is creating performance issues because of deeply nested loops. Instead of full text search find some other fix.
 const filteredPatients = computed(() => {
   const query = searchQuery.value.toLowerCase();
 
   return query
-    ? patientStore.list.filter((patient) => {
-        return Object.values(patient).some((value: any) => {
-          if (typeof value === 'string') {
-            return value.toLowerCase().includes(query);
-          } else {
-            return value.toString()?.includes(query);
-          }
-        });
+    ? patientStore.list.filter(({ name, lastName }) => {
+        return (
+          name.toLowerCase().includes(query) ||
+          lastName.toLowerCase().includes(query)
+        );
       })
     : patientStore.list;
 });

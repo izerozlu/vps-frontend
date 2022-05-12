@@ -50,6 +50,7 @@ import ERoutes from '@/enums/routes';
 
 definePageMeta({
   title: 'VPS Giriş',
+  alias: ERoutes.AUTHENTICATION,
 });
 
 const router = useRouter();
@@ -65,7 +66,7 @@ const login = async () => {
   isLoading.value = false;
 
   if (authenticationStore.isLoggedIn) {
-    router.push(ERoutes.DASHBOARD);
+    router.push(ERoutes.ADMIN_BOARD);
   }
 };
 </script>

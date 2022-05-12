@@ -1,36 +1,36 @@
 <template>
-  <div class="dashboard">
-    <div class="dashbaord__card--authorization dashboard__card">
-      <h2 class="dashboard__title">
+  <div class="admin-board">
+    <div class="dashbaord__card--authorization admin-board__card">
+      <h2 class="admin-board__title">
         {{ t('authentication-and-authorization') }}
       </h2>
-      <div class="dashboard__actions actions">
-        <button class="dashboard__action group" type="button">
+      <div class="admin-board__actions actions">
+        <button class="admin-board__action group" type="button">
           {{ t('groups') }}
           <RightArrowSvg class="action__arrow" />
         </button>
-        <button class="dashboard__action group" type="button">
+        <button class="admin-board__action group" type="button">
           {{ t('users') }}
           <RightArrowSvg class="action__arrow" />
         </button>
       </div>
     </div>
-    <div class="dashboard__card dashboard-card__vps">
-      <h2 class="dashboard__title">{{ t('vps') }}</h2>
-      <div class="dashboard__actions dashboard__actions--compact">
-        <NuxtLink class="dashboard__action group" :to="ERoutes.PATIENT_LIST">
+    <div class="admin-board__card admin-board-card__vps">
+      <h2 class="admin-board__title">{{ t('vps') }}</h2>
+      <div class="admin-board__actions admin-board__actions--compact">
+        <NuxtLink class="admin-board__action group" :to="ERoutes.PATIENT_LIST">
           {{ t('patient-records') }}
           <RightArrowSvg class="action__arrow" />
         </NuxtLink>
-        <button class="dashboard__action group" type="button">
+        <button class="admin-board__action group" type="button">
           {{ t('patient-diagnoses') }}
           <RightArrowSvg class="action__arrow" />
         </button>
-        <button class="dashboard__action group" type="button">
+        <button class="admin-board__action group" type="button">
           {{ t('patient-videos') }}
           <RightArrowSvg class="action__arrow" />
         </button>
-        <button class="dashboard__action group" type="button">
+        <button class="admin-board__action group" type="button">
           {{ t('video-tags') }}
           <RightArrowSvg class="action__arrow" />
         </button>
@@ -51,8 +51,8 @@ const { t } = useI18n();
 
 definePageMeta({
   title: 'VPS Dashboard',
-  alias: [ERoutes.DASHBOARD, ERoutes.INDEX],
-  middleware: ['redirect-to-dashboard'],
+  alias: [ERoutes.ADMIN_BOARD, ERoutes.INDEX],
+  middleware: ['redirect-to-admin-board'],
   layout: 'with-sidenav',
 });
 
@@ -60,26 +60,26 @@ onMounted(() => setupSidenavStore());
 </script>
 
 <style scoped lang="scss">
-.dashboard__card {
+.admin-board__card {
   @apply rounded-[20px] w-min p-10;
   box-shadow: 0px 7px 13px 0px rgba(43, 193, 85, 0.08);
 }
 
-.dashboard__title {
+.admin-board__title {
   @apply font-semibold text-lg mb-6;
 }
 
-.dashboard__actions {
+.admin-board__actions {
   @apply flex flex-col w-[620px];
 
   &--compact {
-    .dashboard__action {
+    .admin-board__action {
       @apply mb-2;
     }
   }
 }
 
-.dashboard__action {
+.admin-board__action {
   @apply rounded-lg flex bg-light-500 text-left mb-6 p-6 overflow-hidden relative items-center hover:bg-white last:mb-0;
   box-shadow: 0px 10px 49px 0px rgba(0, 0, 0, 0.13);
 }

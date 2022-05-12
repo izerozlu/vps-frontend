@@ -2,7 +2,7 @@ enum ERoutes {
   INDEX = '/',
   AUTHENTICATION = '/authentication',
   PATIENT_LIST = '/patient-list',
-  DASHBOARD = '/dashboard',
+  ADMIN_BOARD = '/admin-board',
 }
 
 export default ERoutes;
