@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full patient-list">
+  <div class="flex flex-col h-min-[200px] w-full patient-list basis-full">
     <div class="flex mb-6 patient-list__search-and-actions">
       <div class="bg-white p-input-icon-right patient-list__input-wrapper">
         <InputText

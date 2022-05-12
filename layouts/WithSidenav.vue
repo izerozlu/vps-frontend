@@ -12,10 +12,10 @@
       />
     </aside>
     <main
-      class="min-w-[200px] px-12 pb-16 with-sidenav-layout__content basis-full overflow-auto"
+      class="flex flex-col px-12 pb-4 with-sidenav-layout__content overflow-auto"
     >
       <header
-        class="flex h-32 w-full with-sidenav-layout__header header items-center justify-between"
+        class="flex h-32 w-full top-0 with-sidenav-layout__header header items-center justify-between"
       >
         <h1 class="font-semibold text-3xl header__title">
           {{ sidenavStore.pageTitle }}
