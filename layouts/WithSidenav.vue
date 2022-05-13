@@ -12,21 +12,26 @@
       />
     </aside>
     <main
-      class="flex flex-col px-12 pb-4 with-sidenav-layout__content overflow-auto"
+      class="flex flex-col w-full px-12 pb-4 with-sidenav-layout__content overflow-auto"
     >
       <header
-        class="flex h-32 w-full top-0 with-sidenav-layout__header header items-center justify-between"
+        class="flex min-h-32 w-full top-0 with-sidenav-layout__header header items-center justify-between relative"
       >
         <h1 class="font-semibold text-3xl header__title">
           {{ sidenavStore.pageTitle }}
         </h1>
         <button
-          class="border border-solid rounded-xl flex border-gray-300 p-4 header__logout-button items-center"
+          class="border border-solid rounded-xl flex border-gray-300 shadow-pretty-one--light p-4 transition-shadow duration-200 header__logout-button items-center hover:shadow-pretty-one"
           @click="logout()"
         >
           {{ t('logout') }}
           <i class="ml-2 pi pi-sign-out" />
         </button>
+        <ProgressBar
+          class="w-full h-4 !absolute bottom-2"
+          mode="indeterminate"
+          v-if="sidenavStore.isLoading"
+        />
       </header>
       <slot />
     </main>
@@ -63,15 +68,6 @@ const logout = async () => {
 
 .with-sidenav-layout__sidenav {
   box-shadow: 18px 4px 35px 0px rgba(0, 0, 0, 0.02);
-}
-
-.header__logout-button {
-  box-shadow: 18px -5px 35px 18px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s ease-out;
-
-  &:hover {
-    box-shadow: 18px 4px 35px 18px rgba(0, 0, 0, 0.2);
-  }
 }
 </style>
 

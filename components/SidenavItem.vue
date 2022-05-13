@@ -26,6 +26,10 @@
 <script setup lang="ts">
 import RightArrowSvg from '@/assets/icons/right-arrow.svg?component';
 import ISidenavItem from '@/interfaces/sidenav-item';
+import useSidenavStore from '@/store/sidenav';
+import ERoutes from '@/enums/routes';
+
+const sidenavStore = useSidenavStore();
 
 const route = useRoute();
 
@@ -39,6 +43,9 @@ const icon = computed(() => {
 });
 
 const isActive = computed(() => {
-  return route.path === props.item.route;
+  return (
+    route.path === props.item.route ||
+    sidenavStore.routesToActivateAdminItem.includes(route.path as ERoutes)
+  );
 });
 </script>

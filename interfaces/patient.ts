@@ -30,6 +30,7 @@ interface IPatient {
   fatherEducation: EEducation;
   parentingAttitude: EParentingAttitude;
   savedDate: string;
+  // TODO [ozlui] Ask Dilsen about how to implement this field for the PatientForm
   previousDiagnosis: IDiagnosis[];
   fullText?: string;
 }

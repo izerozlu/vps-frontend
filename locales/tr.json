@@ -1,3 +1,34 @@
 {
-    "admin": "Admin"
+    "admin": "Admin",
+    "male": "Erkek",
+    "female": "Kadın",
+    "yes": "Evet",
+    "no": "Hayır",
+    "patient": {
+        "name": "Hasta Adı",
+        "last-name": "Hasta Soyadı",
+        "birth-date": "Doğum Tarihi",
+        "tckn": "TC Kimlik No",
+        "age": "Yaş",
+        "gender": "Cinsiyet",
+        "diagnosis": "Tanı",
+        "diagnosis-date": "Tanı Tarihi",
+        "martial-status": "Medeni Durum",
+        "education": "Eğitim",
+        "profession": "Meslek",
+        "salary-range": "Maaş Aralığı",
+        "medicines-currently-used": "Şu Anda Kullanılan İlaçlar",
+        "alcohol-usage": "Alkol Kullanımı",
+        "use-drugs": "Uyuşturucu Kullanımı",
+        "is-psychiatry-in-childhood": "Çocuklukta Psikiatri Tedavisi",
+        "psychiatry-time": "Psikiatri Zamanı",
+        "is-diagnosis-of-hyperactivity-in-childhood": "Çocuklukta Hyperaktiflik Tanısı",
+        "hyperactivity-medicine-name": "Hyperaktiflik İlaç Adı",
+        "hyperactivity-medicine-time": "Hyperaktiflik İlaç Zamanı",
+        "mother-education": "Anne Eğitimi",
+        "father-education": "Baba Eğitimi",
+        "parenting-attitude": "Ebeveynlik Davranışı",
+        "saved-date": "Kaydedilme Tarihi",
+        "previous-diagnosis": "Önceki Tanı"
+    }
 }

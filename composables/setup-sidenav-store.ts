@@ -2,7 +2,10 @@ import ERoutes from '@/enums/routes';
 import { useI18n } from 'vue-i18n';
 import useSidenavStore from '@/store/sidenav';
 
-const setupSidenavStore = (pageTitle?: string) => {
+const setupSidenavStore = (
+  pageTitle?: string,
+  routesToActivateSidenavItem?: ERoutes[] | ERoutes
+) => {
   const sidenavStore = useSidenavStore();
   const { t } = useI18n();
 
@@ -14,6 +17,7 @@ const setupSidenavStore = (pageTitle?: string) => {
       route: ERoutes.ADMIN_BOARD,
     },
   ];
+  sidenavStore.routesToActivateAdminItem = [routesToActivateSidenavItem].flat();
 };
 
 export default setupSidenavStore;

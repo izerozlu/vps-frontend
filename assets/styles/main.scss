@@ -22,3 +22,25 @@ body,
 .p-button.p-button--danger {
   @apply bg-awesome rounded-lg py-4 px-5 transition !important;
 }
+
+.p-togglebutton {
+  &.p-highlight {
+    @apply !bg-primary-purple !text-white;
+
+    .p-button-icon {
+      @apply !text-white;
+    }
+  }
+
+  .p-button-label {
+    transition: none;
+  }
+}
+
+.p-progressbar {
+  @apply !bg-glossy-grape;
+
+  .p-progressbar-value {
+    @apply !bg-primary-purple;
+  }
+}

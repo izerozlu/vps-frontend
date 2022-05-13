@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-min-[200px] w-full patient-list basis-full">
+  <div class="flex flex-col h-min-[200px] patient-list basis-full">
     <div class="flex mb-6 patient-list__search-and-actions">
       <div class="bg-white p-input-icon-right patient-list__input-wrapper">
         <InputText
@@ -10,16 +10,11 @@
         <i class="pi pi-search !right-10" />
       </div>
       <button
-        class="bg-jungle-green rounded-xl flex font-semibold ml-auto text-white mr-6 py-4 px-3 patient-list__change-button items-center"
+        class="patient-list__button"
+        @click="navigateToPatientForm('add')"
       >
-        <i class="mr-3 pi pi-check-circle !text-[20px]" />
+        <i class="mr-2 pi pi-check-circle !text-[20px]" />
         <span class="w-full">{{ t('add') }}</span>
-      </button>
-      <button
-        class="bg-awesome rounded-xl flex font-semibold text-white py-4 px-3 patient-list__change-button items-center"
-      >
-        <i class="mr-3 pi pi-times-circle !text-[20px]" />
-        <span class="w-full">{{ t('change') }}</span>
       </button>
     </div>
     <Table
@@ -35,8 +30,10 @@
 import { useI18n } from 'vue-i18n';
 
 import usePatientStore from '@/store/patient';
+import useSidenavStore from '@/store/sidenav';
+
 import IPatient from '@/interfaces/patient';
-import ERoutes from '~~/enums/routes';
+import ERoutes from '@/enums/routes';
 
 definePageMeta({
   title: 'Patient List',
@@ -45,39 +42,38 @@ definePageMeta({
 });
 
 const { t } = useI18n();
+const router = useRouter();
 
 const patientStore = usePatientStore();
+const sidenavStore = useSidenavStore();
 
 const searchQuery = ref('');
 
-const { data } = await useFetch<IPatient[]>('/api/patients');
-patientStore.list = data.value;
-
 // prettier-ignore
 const columns = [
-  { field: 'name', header: t('patient-name'), icCompact: true },
-  { field: 'lastName', header: t('patient-last-name'), isCompact: true },
-  { field: 'tckn', header: t('id-no') },
-  { field: 'birthDate', header: t('birth-date') },
-  { field: 'age', header: t('age'),isCompact: true },
-  { field: 'gender', header: t('gender') ,isCompact: true},
-  { field: 'martialStatus', header: t('martial-status') },
-  { field: 'education', header: t('education') },
-  { field: 'profession', header: t('profession') },
-  { field: 'salaryRange', header: t('salary-range') },
-  { field: 'medicinesCurrentlyUsed', header: t('medicines-currently-used'),isCompact: true },
-  { field: 'alcoholUsage', header: t('alcohol-usage') },
-  { field: 'useDrugs', header: t('use-drugs'),isCompact: true },
-  { field: 'isPsychiatryInChildhood', header: t('is-psychiatry-in-childhood') },
-  { field: 'psychiatryTime', header: t('psychiatry-time') },
-  { field: 'isDiagnosisOfHyperactivityInChildhood', header: t('is-diagnosis-of-hyperactivity-in-childhood') ,isCompact: true},
-  { field: 'hyperactivityMedicineName', header: t('hyperactivity-medicine-name') },
-  { field: 'hyperactivityMedicineTime', header: t('hyperactivity-medicine-time') },
-  { field: 'motherEducation', header: t('mother-education') },
-  { field: 'fatherEducation', header: t('father-education') },
-  { field: 'parentingAttitude', header: t('parenting-attitude') },
-  { field: 'savedDate', header: t('saved-date') },
-  { field: 'previousDiagnosis', header: t('previous-diagnosis') },
+  { field: 'name', header: t('patient.name'), icCompact: true },
+  { field: 'lastName', header: t('patient.last-name'), isCompact: true },
+  { field: 'tckn', header: t('patient.tckn') },
+  { field: 'birthDate', header: t('patient.birth-date') },
+  { field: 'age', header: t('patient.age'),isCompact: true },
+  { field: 'gender', header: t('patient.gender') ,isCompact: true},
+  { field: 'martialStatus', header: t('patient.martial-status') },
+  { field: 'education', header: t('patient.education') },
+  { field: 'profession', header: t('patient.profession') },
+  { field: 'salaryRange', header: t('patient.salary-range') },
+  { field: 'medicinesCurrentlyUsed', header: t('patient.medicines-currently-used'),isCompact: true },
+  { field: 'alcoholUsage', header: t('patient.alcohol-usage') },
+  { field: 'useDrugs', header: t('patient.use-drugs'),isCompact: true },
+  { field: 'isPsychiatryInChildhood', header: t('patient.is-psychiatry-in-childhood') },
+  { field: 'psychiatryTime', header: t('patient.psychiatry-time') },
+  { field: 'isDiagnosisOfHyperactivityInChildhood', header: t('patient.is-diagnosis-of-hyperactivity-in-childhood') ,isCompact: true},
+  { field: 'hyperactivityMedicineName', header: t('patient.hyperactivity-medicine-name') },
+  { field: 'hyperactivityMedicineTime', header: t('patient.hyperactivity-medicine-time') },
+  { field: 'motherEducation', header: t('patient.mother-education') },
+  { field: 'fatherEducation', header: t('patient.father-education') },
+  { field: 'parentingAttitude', header: t('patient.parenting-attitude') },
+  { field: 'savedDate', header: t('patient.saved-date') },
+  { field: 'previousDiagnosis', header: t('patient.previous-diagnosis') },
 ];
 
 // Computed
@@ -95,40 +91,36 @@ const filteredPatients = computed(() => {
       })
     : patientStore.list;
 });
+
+// Methods
+
+const navigateToPatientForm = (type: 'add' | 'edit', patientId?: number) => {
+  router.push({ path: ERoutes.PATIENT_FORM, query: { type, patientId } });
+};
+
 // Life Cycle Hooks
 
-onMounted(() => setupSidenavStore(t('patient-records')));
+onMounted(async () => {
+  setupSidenavStore(t('patient-records'), ERoutes.PATIENT_LIST);
+  sidenavStore.isLoading = true;
+  const response = await $fetch('/api/patient/list');
+  console.log(response);
+
+  if (response.status === 'success') {
+    patientStore.list = response.list;
+  }
+  sidenavStore.isLoading = false;
+});
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.patient-list__button {
+  @apply bg-primary-purple ml-auto rounded-xl flex font-semibold text-white text-lg py-4 px-6 items-center;
+}
+</style>
 
 <i18n lang="yaml">
 tr:
-  patient-name: Hasta Adı
-  patient-last-name: Hasta Soyadı
-  birth-date: Doğum Tarihi
-  id-no: TC Kimlik No
-  age: Yaş
-  gender: Cinsiyet
-  diagnosis: Tanı
-  diagnosis-date: Tanı Tarihi
-  martial-status: Medeni Durum
-  education: Eğitim
-  profession: Meslek
-  salary-range: Maaş Aralığı
-  medicines-currently-used: Şu Anda Kullanılan İlaçlar
-  alcohol-usage: Alkol Kullanımı
-  use-drugs: Uyuşturucu Kullanımı
-  is-psychiatry-in-childhood: Çocuklukta Psikiatri Tedavisi
-  psychiatry-time: Psikiatri Zamanı
-  is-diagnosis-of-hyperactivity-in-childhood: Çocuklukta Hyperaktiflik Tanısı
-  hyperactivity-medicine-name: Hyperaktiflik İlaç Adı
-  hyperactivity-medicine-time: Hyperaktiflik İlaç Zamanı
-  mother-education: Anne Eğitimi
-  father-education: Baba Eğitimi
-  parenting-attitude: Ebeveynlik Davranışı
-  saved-date: Kaydedilme Tarihi
-  previous-diagnosis: Önceki Tanı
   search: Arama
   change: Değiştir
   add: Ekle
