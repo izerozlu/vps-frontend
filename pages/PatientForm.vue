@@ -66,29 +66,29 @@
         option-label="label"
         option-value="value"
         :options="[
-          { label: t('male'), value: EGender.MALE },
-          { label: t('female'), value: EGender.FEMALE },
+          { label: t('gender.male'), value: EGender.MALE },
+          { label: t('gender.female'), value: EGender.FEMALE },
         ]"
       />
     </div>
     <div class="patient-form__field">
-      <label class="mr-16 patient-form__label" for="martial-status">
-        {{ t('patient.martial-status') }}:
+      <label class="mr-16 patient-form__label" for="marital-status">
+        {{ t('patient.marital-status') }}:
       </label>
       <Dropdown
-        id="martial-status"
+        id="marital-status"
         class="patient-form__input patient-form__input--dropdown"
-        v-model="patientStore.form.martialStatus"
+        v-model="patientStore.form.maritalStatus"
         option-label="label"
         option-value="value"
         :options="[
-          { label: t('martial-status.single'), value: EMartialStatus.SINGLE },
-          { label: t('martial-status.married'), value: EMartialStatus.MARRIED },
+          { label: t('marital-status.single'), value: EMaritalStatus.SINGLE },
+          { label: t('marital-status.married'), value: EMaritalStatus.MARRIED },
           {
-            label: t('martial-status.divorced'),
-            value: EMartialStatus.DIVORCED,
+            label: t('marital-status.divorced'),
+            value: EMaritalStatus.DIVORCED,
           },
-          { label: t('martial-status.widowed'), value: EMartialStatus.WIDOWED },
+          { label: t('marital-status.widowed'), value: EMaritalStatus.WIDOWED },
         ]"
       />
     </div>
@@ -411,7 +411,7 @@ import { useI18n } from 'vue-i18n';
 import usePatientStore from '@/store/patient';
 import ERoutes from '@/enums/routes';
 import EGender from '@/enums/gender';
-import EMartialStatus from '@/enums/martial-status';
+import EMaritalStatus from '@/enums/marital-status';
 import EEducation from '@/enums/education';
 import ESalaryRange from '@/enums/salary-range';
 import EAlcoholUsage from '@/enums/alcohol-usage';
@@ -577,31 +577,4 @@ tr:
     default: Hasta Formu
     add: Kayıt
     update: Güncelle
-  martial-status:
-    single: Bekar
-    married: Evli
-    divorced: Ayrılmış
-    widowed: Dul
-  education:
-    primary-school: İlkokul
-    secondary-school: Ortaokul
-    high-school: Lise
-    university: Üniversite
-    master-of-science: Master
-    doctor-of-philosophy: Doktora
-  salary-range:
-    under-5000: 5000 TL den az
-    between-5000-10000: 5000 - 10000 TL arası
-    above-10000: 10000 TL den çok
-  alcohol-usage:
-    never: Hiç
-    sometimes: Bazen
-    often: Sık sık
-    every-day: Her gün
-    always: Her zaman
-  parenting-attitude:
-    democratic: Demokratik
-    autocratic: Otonom
-    over-protective: Fazla koruyucu
-    disinterested: İlgisiz
 </i18n>

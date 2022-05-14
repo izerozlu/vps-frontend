@@ -1,7 +1,5 @@
 {
     "admin": "Admin",
-    "male": "Erkek",
-    "female": "Kadın",
     "yes": "Evet",
     "no": "Hayır",
     "patient": {
@@ -13,7 +11,7 @@
         "gender": "Cinsiyet",
         "diagnosis": "Tanı",
         "diagnosis-date": "Tanı Tarihi",
-        "martial-status": "Medeni Durum",
+        "marital-status": "Medeni Durum",
         "education": "Eğitim",
         "profession": "Meslek",
         "salary-range": "Maaş Aralığı",
@@ -30,5 +28,45 @@
         "parenting-attitude": "Ebeveynlik Davranışı",
         "saved-date": "Kaydedilme Tarihi",
         "previous-diagnosis": "Önceki Tanı"
+    },
+    "boolean": {
+        "true": "Evet",
+        "false": "Hayır"
+    },
+    "gender": {
+        "male": "Erkek",
+        "female": "Kadın"
+    },
+    "marital-status": {
+        "single": "Bekar",
+        "married": "Evli",
+        "divorced": "Ayrılmış",
+        "widowed": "Dul"
+    },
+    "education": {
+        "primary-school": "İlkokul",
+        "secondary-school": "Ortaokul",
+        "high-school": "Lise",
+        "university": "Üniversite",
+        "master-of-science": "Master",
+        "doctor-of-philosophy": "Doktora"
+    },
+    "salary-range": {
+        "under-5000": "5000 TL den az",
+        "between-5000-10000": "5000 - 10000 TL arası",
+        "above-10000": "10000 TL den çok"
+    },
+    "alcohol-usage": {
+        "never": "Hiç",
+        "sometimes": "Bazen",
+        "often": "Sık sık",
+        "every-day": "Her gün",
+        "always": "Her zaman"
+    },
+    "parenting-attitude": {
+        "democratic": "Demokratik",
+        "autocratic": "Otonom",
+        "over-protective": "Fazla koruyucu",
+        "disinterested": "İlgisiz"
     }
 }

@@ -25,7 +25,10 @@
           :class="{ 'font-bold': frozenColumns?.includes(column.field) }"
           :title="slotProps.data[column.field]"
         >
-          {{ slotProps.data[column.field] }}
+          {{
+            column.processor?.(slotProps.data[column.field]) ||
+            slotProps.data[column.field]
+          }}
         </span>
       </template>
     </Column>
@@ -34,7 +37,12 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  columns: { field: string; header: string; isCompact?: boolean }[];
+  columns: {
+    field: string;
+    header: string;
+    isCompact?: boolean;
+    processor?: (value) => string;
+  }[];
   data: any[];
   isCompact?: boolean;
   frozenColumns?: string[];

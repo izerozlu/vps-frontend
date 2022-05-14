@@ -32,7 +32,6 @@ import { useI18n } from 'vue-i18n';
 import usePatientStore from '@/store/patient';
 import useSidenavStore from '@/store/sidenav';
 
-import IPatient from '@/interfaces/patient';
 import ERoutes from '@/enums/routes';
 
 definePageMeta({
@@ -48,33 +47,6 @@ const patientStore = usePatientStore();
 const sidenavStore = useSidenavStore();
 
 const searchQuery = ref('');
-
-// prettier-ignore
-const columns = [
-  { field: 'name', header: t('patient.name'), icCompact: true },
-  { field: 'lastName', header: t('patient.last-name'), isCompact: true },
-  { field: 'tckn', header: t('patient.tckn') },
-  { field: 'birthDate', header: t('patient.birth-date') },
-  { field: 'age', header: t('patient.age'),isCompact: true },
-  { field: 'gender', header: t('patient.gender') ,isCompact: true},
-  { field: 'martialStatus', header: t('patient.martial-status') },
-  { field: 'education', header: t('patient.education') },
-  { field: 'profession', header: t('patient.profession') },
-  { field: 'salaryRange', header: t('patient.salary-range') },
-  { field: 'medicinesCurrentlyUsed', header: t('patient.medicines-currently-used'),isCompact: true },
-  { field: 'alcoholUsage', header: t('patient.alcohol-usage') },
-  { field: 'useDrugs', header: t('patient.use-drugs'),isCompact: true },
-  { field: 'isPsychiatryInChildhood', header: t('patient.is-psychiatry-in-childhood') },
-  { field: 'psychiatryTime', header: t('patient.psychiatry-time') },
-  { field: 'isDiagnosisOfHyperactivityInChildhood', header: t('patient.is-diagnosis-of-hyperactivity-in-childhood') ,isCompact: true},
-  { field: 'hyperactivityMedicineName', header: t('patient.hyperactivity-medicine-name') },
-  { field: 'hyperactivityMedicineTime', header: t('patient.hyperactivity-medicine-time') },
-  { field: 'motherEducation', header: t('patient.mother-education') },
-  { field: 'fatherEducation', header: t('patient.father-education') },
-  { field: 'parentingAttitude', header: t('patient.parenting-attitude') },
-  { field: 'savedDate', header: t('patient.saved-date') },
-  { field: 'previousDiagnosis', header: t('patient.previous-diagnosis') },
-];
 
 // Computed
 
@@ -98,6 +70,14 @@ const navigateToPatientForm = (type: 'add' | 'edit', patientId?: number) => {
   router.push({ path: ERoutes.PATIENT_FORM, query: { type, patientId } });
 };
 
+const processEnumKey = (key: string | boolean) => {
+  return key.toString().toLowerCase().replace(/[_]/g, '-');
+};
+
+const generateColumnProcessorFunction = (parentKey: string) => {
+  return (value: string) => t(`${parentKey}.${processEnumKey(value)}`);
+};
+
 // Life Cycle Hooks
 
 onMounted(async () => {
@@ -111,6 +91,89 @@ onMounted(async () => {
   }
   sidenavStore.isLoading = false;
 });
+
+const columns = [
+  { field: 'name', header: t('patient.name'), icCompact: true },
+  { field: 'lastName', header: t('patient.last-name'), isCompact: true },
+  { field: 'tckn', header: t('patient.tckn') },
+  { field: 'birthDate', header: t('patient.birth-date') },
+  { field: 'age', header: t('patient.age'), isCompact: true },
+  {
+    field: 'gender',
+    header: t('patient.gender'),
+    isCompact: true,
+    processor: generateColumnProcessorFunction('gender'),
+  },
+  {
+    field: 'maritalStatus',
+    header: t('patient.marital-status'),
+    processor: generateColumnProcessorFunction('marital-status'),
+  },
+  {
+    field: 'education',
+    header: t('patient.education'),
+    processor: generateColumnProcessorFunction('education'),
+  },
+  { field: 'profession', header: t('patient.profession') },
+  {
+    field: 'salaryRange',
+    header: t('patient.salary-range'),
+    processor: generateColumnProcessorFunction('salary-range'),
+  },
+  {
+    field: 'medicinesCurrentlyUsed',
+    header: t('patient.medicines-currently-used'),
+    isCompact: true,
+  },
+  {
+    field: 'alcoholUsage',
+    header: t('patient.alcohol-usage'),
+    processor: generateColumnProcessorFunction('alcohol-usage'),
+  },
+  {
+    field: 'useDrugs',
+    header: t('patient.use-drugs'),
+    isCompact: true,
+    processor: generateColumnProcessorFunction('boolean'),
+  },
+  {
+    field: 'isPsychiatryInChildhood',
+    header: t('patient.is-psychiatry-in-childhood'),
+    processor: generateColumnProcessorFunction('boolean'),
+  },
+  { field: 'psychiatryTime', header: t('patient.psychiatry-time') },
+  {
+    field: 'isDiagnosisOfHyperactivityInChildhood',
+    header: t('patient.is-diagnosis-of-hyperactivity-in-childhood'),
+    isCompact: true,
+    processor: generateColumnProcessorFunction('boolean'),
+  },
+  {
+    field: 'hyperactivityMedicineName',
+    header: t('patient.hyperactivity-medicine-name'),
+  },
+  {
+    field: 'hyperactivityMedicineTime',
+    header: t('patient.hyperactivity-medicine-time'),
+  },
+  {
+    field: 'motherEducation',
+    header: t('patient.mother-education'),
+    processor: generateColumnProcessorFunction('education'),
+  },
+  {
+    field: 'fatherEducation',
+    header: t('patient.father-education'),
+    processor: generateColumnProcessorFunction('education'),
+  },
+  {
+    field: 'parentingAttitude',
+    header: t('patient.parenting-attitude'),
+    processor: generateColumnProcessorFunction('parenting-attitude'),
+  },
+  { field: 'savedDate', header: t('patient.saved-date') },
+  { field: 'previousDiagnosis', header: t('patient.previous-diagnosis') },
+];
 </script>
 
 <style scoped lang="scss">

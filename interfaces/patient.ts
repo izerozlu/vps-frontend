@@ -2,7 +2,7 @@ import ESalaryRange from '@/enums/salary-range';
 import EAlcoholUsage from '@/enums/alcohol-usage';
 import EEducation from '@/enums/education';
 import EGender from '@/enums/gender';
-import EMartialStatus from '@/enums/martial-status';
+import EMaritalStatus from '@/enums/marital-status';
 import EParentingAttitude from '@/enums/parenting-attitude';
 import IDiagnosis from '@/interfaces/diagnosis';
 
@@ -14,7 +14,7 @@ interface IPatient {
   birthDate: string;
   age: number;
   gender: EGender;
-  martialStatus: EMartialStatus;
+  maritalStatus: EMaritalStatus;
   education: EEducation;
   profession: string;
   salaryRange: ESalaryRange;
