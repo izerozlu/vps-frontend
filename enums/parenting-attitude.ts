@@ -1,8 +1,8 @@
 enum EParentingAttitude {
-	DEMOCRATIC = 'Demokratik',
-	AUTOCRATIC = 'Otokratik - Baskıcı',
-	OVER_PROTECTIVE = 'Aşırı Koruyucu',
-	DISINTERESTED = 'İlgisiz anne - baba',
+  DEMOCRATIC = 'DEMOCRATIC',
+  AUTOCRATIC = 'AUTOCRATIC',
+  OVER_PROTECTIVE = 'OVER_PROTECTIVE',
+  DISINTERESTED = 'DISINTERESTED',
 }
 
 export default EParentingAttitude;
