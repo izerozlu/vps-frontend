@@ -6,39 +6,63 @@ body,
   font-family: 'Poppins', sans-serif;
 }
 
-.p-button.p-button--success {
-  @apply bg-jungle-green rounded-lg py-4 px-5 transition !important;
+.ant-picker {
+  @apply border-none p-0;
 
-  &:hover {
-    @apply opacity-60;
+  .ant-picker-input input {
+    @apply max-w-[420px];
   }
 
-  .p-button-icon {
-    font-size: 1.5rem;
-    @apply mr-3;
+  .ant-picker-suffix {
+    @apply absolute right-4;
   }
 }
 
-.p-button.p-button--danger {
-  @apply bg-awesome rounded-lg py-4 px-5 transition !important;
+.ant-input {
+  @apply py-4 px-8 border-none;
 }
 
-.p-togglebutton {
-  &.p-highlight {
-    @apply !bg-primary-purple !text-white;
+.ant-select {
+  .ant-select-selector {
+    @apply py-3 px-8 !border-none h-[unset];
+  }
+}
 
-    .p-button-icon {
-      @apply !text-white;
+.ant-switch.ant-switch-checked {
+  @apply !bg-primary-purple;
+}
+
+.ant-btn {
+  @apply rounded-lg py-4 px-5 transition h-[unset];
+
+  & .ant-btn > span + .anticon {
+    @apply mr-2;
+  }
+
+  &.ant-btn--success {
+    @apply bg-jungle-green text-white !important;
+  }
+}
+.ant-table {
+  .ant-table-thead .ant-table-cell {
+    @apply bg-awesome text-white;
+
+    &:first-child {
+      @apply rounded-l-xl;
+    }
+
+    &:last-child {
+      @apply rounded-r-xl;
     }
   }
 
-  .p-button-label {
-    transition: none;
+  .ant-table-cell {
+    @apply whitespace-nowrap;
   }
 }
 
 .p-progressbar {
-  @apply !bg-glossy-grape;
+  @apply w-full h-1 absolute bottom-2 !important;
 
   .p-progressbar-value {
     @apply !bg-primary-purple;

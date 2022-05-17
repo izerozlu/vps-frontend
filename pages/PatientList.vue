@@ -1,38 +1,88 @@
 <template>
   <div class="flex flex-col h-min-[200px] patient-list basis-full">
     <div class="flex mb-6 patient-list__search-and-actions">
-      <div class="bg-white p-input-icon-right patient-list__input-wrapper">
-        <InputText
-          class="h-14 w-full patient-list__search !border-none !rounded-xl !py-0 !pl-10"
-          :placeholder="t('search')"
-          v-model="searchQuery"
-        />
-        <i class="pi pi-search !right-10" />
-      </div>
-      <button
-        class="patient-list__button"
-        @click="navigateToPatientForm('add')"
+      <AntInput
+        class="h-14 w-full patient-list__search !w-60 !border-none !rounded-xl !py-0 !pl-10 mr-auto"
+        :placeholder="t('search')"
+        @change="(event) => setDebouncedQuery(event.target.value)"
       >
-        <i class="mr-2 pi pi-check-circle !text-[20px]" />
+        <template #suffix>
+          <SearchOutlined />
+        </template>
+      </AntInput>
+      <AntButton
+        class="patient-list__button patient-list__button--add"
+        @click="navigateToPatientForm('add')"
+        v-if="!isRemoving"
+      >
+        <PlusCircleOutlined />
         <span class="w-full">{{ t('add') }}</span>
-      </button>
+      </AntButton>
+      <AntButton
+        class="patient-list__button patient-list__button--remove"
+        :class="{ 'patient-list__button--complete mr-4': isRemoving }"
+        :disabled="isRemoving ? !selectedRowKeys?.length : false"
+        @click="() => (isRemoving ? completeRemoval() : startRemoval())"
+      >
+        <DeleteOutlined />
+        <span class="w-full">{{ t(isRemoving ? 'complete' : 'remove') }}</span>
+      </AntButton>
+      <AntButton
+        class="patient-list__button patient-list__button--cancel"
+        @click="cancelRemoval"
+        v-if="isRemoving"
+      >
+        <CloseCircleOutlined />
+        <span class="w-full">{{ t('cancel') }}</span>
+      </AntButton>
     </div>
-    <Table
-      class="patient-list__table"
-      :data="filteredPatients"
+    <AntTable
+      class="patient-list__patient-table patient-table"
+      :data-source="filteredPatients"
       :columns="columns"
-      :is-compact="true"
+      :scroll="{ x: true }"
+      :pagination="false"
+      :row-selection="
+        isSelectable
+          ? {
+              selectedRowKeys,
+              onChange: updateSelectedRows,
+            }
+          : null
+      "
+      :custom-row="
+        (patient) => {
+          return {
+            onClick: isSelectable
+              ? () => handleRowClickForSelect(patient)
+              : () => navigateToPatientForm('update', patient.id),
+          };
+        }
+      "
+      bordered
+      row-class-name="patient-table__row"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
+import {
+  CloseCircleOutlined,
+  SearchOutlined,
+  DeleteOutlined,
+  PlusCircleOutlined,
+} from '@ant-design/icons-vue';
+import { debounce } from '@antfu/utils';
+import { Key } from 'ant-design-vue/es/_util/type';
+import { useToast } from 'vue-toastification';
 
 import usePatientStore from '@/store/patient';
 import useSidenavStore from '@/store/sidenav';
 
 import ERoutes from '@/enums/routes';
+import IServerResponse from '@/interfaces/server-response';
+import IPatient from '@/interfaces/patient';
 
 definePageMeta({
   title: 'Patient List',
@@ -42,143 +92,267 @@ definePageMeta({
 
 const { t } = useI18n();
 const router = useRouter();
+const toast = useToast();
 
 const patientStore = usePatientStore();
 const sidenavStore = useSidenavStore();
 
-const searchQuery = ref('');
+const isSelectable = ref(false);
+const isRemoving = ref(false);
+const selectedRowKeys = ref<Key[]>([]);
+const debouncedQuery = ref('');
 
 // Computed
 
-// This bad boi is creating performance issues because of deeply nested loops. Instead of full text search find some other fix.
 const filteredPatients = computed(() => {
-  const query = searchQuery.value.toLowerCase();
+  const query = debouncedQuery.value.toLowerCase();
 
-  return query
-    ? patientStore.list.filter(({ name, lastName }) => {
-        return (
-          name.toLowerCase().includes(query) ||
-          lastName.toLowerCase().includes(query)
-        );
-      })
-    : patientStore.list;
+  return (
+    query
+      ? patientStore.list.filter(({ name, lastName }) => {
+          return (
+            name.toLowerCase().includes(query) ||
+            lastName.toLowerCase().includes(query)
+          );
+        })
+      : patientStore.list
+  )
+    .sort((patientA: IPatient, patientB: IPatient) => {
+      if (patientA.id > patientB.id) return -1;
+      if (patientA.id < patientB.id) return 1;
+      return 0;
+    })
+    .map((patient, index) => {
+      return { ...patient, key: index };
+    });
 });
 
 // Methods
 
-const navigateToPatientForm = (type: 'add' | 'edit', patientId?: number) => {
+const handleRowClickForSelect = (patient: IPatient) => {
+  const { key } = patient;
+  if (!selectedRowKeys.value.includes(key)) {
+    updateSelectedRows([...selectedRowKeys.value, patient.key]);
+  } else {
+    updateSelectedRows(
+      selectedRowKeys.value.filter((rowKey) => rowKey !== key)
+    );
+  }
+};
+
+const navigateToPatientForm = (type: 'add' | 'update', patientId?: number) => {
   router.push({ path: ERoutes.PATIENT_FORM, query: { type, patientId } });
 };
 
-const processEnumKey = (key: string | boolean) => {
-  return key.toString().toLowerCase().replace(/[_]/g, '-');
+const startRemoval = () => {
+  isRemoving.value = true;
+  isSelectable.value = true;
 };
 
+const cancelRemoval = () => {
+  isRemoving.value = false;
+  isSelectable.value = false;
+  selectedRowKeys.value = [];
+};
+
+const updateSelectedRows = (keys: Key[]) => {
+  selectedRowKeys.value = keys;
+};
+
+const completeRemoval = async () => {
+  sidenavStore.isLoading = true;
+  const responses = await Promise.all(
+    selectedRowKeys.value.map(async (key) => {
+      const patient = filteredPatients.value[key];
+      let response: IServerResponse;
+      try {
+        response = await $fetch(`/api/patient/delete?patientId=${patient.id}`, {
+          method: 'DELETE',
+        });
+      } catch (e) {
+        response = { status: 'fail' };
+      }
+
+      return { response, patient };
+    })
+  );
+
+  responses.forEach(
+    ({
+      response,
+      patient,
+    }: {
+      response: IServerResponse;
+      patient: IPatient;
+    }) => {
+      const patientName = `${patient.name} ${patient.lastName}`;
+
+      if (response.status === 'fail') {
+        toast.error(
+          t('remove-request.error', {
+            patientName,
+          }),
+          { timeout: 0 }
+        );
+      } else if (response.status === 'success') {
+        toast.success(t('remove-request.success', { patientName }));
+      }
+    }
+  );
+
+  cancelRemoval();
+  fetchPatients();
+  sidenavStore.isLoading = false;
+};
+
+const processEnumKey = (key: string | boolean | undefined) => {
+  return key?.toString().toLowerCase().replace(/[_]/g, '-');
+};
+
+const setDebouncedQuery = debounce(400, false, (value: string) => {
+  debouncedQuery.value = value;
+});
+
 const generateColumnProcessorFunction = (parentKey: string) => {
-  return (value: string) => t(`${parentKey}.${processEnumKey(value)}`);
+  return ({ value }: { value: string }) =>
+    value ? t(`${parentKey}.${processEnumKey(value)}`) : null;
+};
+
+const fetchPatients = async () => {
+  sidenavStore.isLoading = true;
+  const response = await $fetch<IServerResponse>('/api/patient/list');
+
+  if (response.status === 'success') {
+    patientStore.list = response.data.list;
+  }
+  sidenavStore.isLoading = false;
 };
 
 // Life Cycle Hooks
 
-onMounted(async () => {
+onMounted(() => {
   setupSidenavStore(t('patient-records'), ERoutes.PATIENT_LIST);
-  sidenavStore.isLoading = true;
-  const response = await $fetch('/api/patient/list');
-  console.log(response);
-
-  if (response.status === 'success') {
-    patientStore.list = response.list;
-  }
-  sidenavStore.isLoading = false;
+  fetchPatients();
 });
 
 const columns = [
-  { field: 'name', header: t('patient.name'), icCompact: true },
-  { field: 'lastName', header: t('patient.last-name'), isCompact: true },
-  { field: 'tckn', header: t('patient.tckn') },
-  { field: 'birthDate', header: t('patient.birth-date') },
-  { field: 'age', header: t('patient.age'), isCompact: true },
   {
-    field: 'gender',
-    header: t('patient.gender'),
-    isCompact: true,
-    processor: generateColumnProcessorFunction('gender'),
+    dataIndex: 'name',
+    title: t('patient.name'),
+    fixed: 'left',
   },
   {
-    field: 'maritalStatus',
-    header: t('patient.marital-status'),
-    processor: generateColumnProcessorFunction('marital-status'),
+    dataIndex: 'lastName',
+    title: t('patient.last-name'),
+    fixed: 'left',
+  },
+  { dataIndex: 'tckn', title: t('patient.tckn') },
+  { dataIndex: 'birthDate', title: t('patient.birth-date') },
+  { dataIndex: 'age', title: t('patient.age') },
+  {
+    dataIndex: 'gender',
+    title: t('patient.gender'),
+    customRender: generateColumnProcessorFunction('gender'),
   },
   {
-    field: 'education',
-    header: t('patient.education'),
-    processor: generateColumnProcessorFunction('education'),
-  },
-  { field: 'profession', header: t('patient.profession') },
-  {
-    field: 'salaryRange',
-    header: t('patient.salary-range'),
-    processor: generateColumnProcessorFunction('salary-range'),
+    dataIndex: 'maritalStatus',
+    title: t('patient.marital-status'),
+    customRender: generateColumnProcessorFunction('marital-status'),
   },
   {
-    field: 'medicinesCurrentlyUsed',
-    header: t('patient.medicines-currently-used'),
-    isCompact: true,
+    dataIndex: 'education',
+    title: t('patient.education'),
+    customRender: generateColumnProcessorFunction('education'),
   },
   {
-    field: 'alcoholUsage',
-    header: t('patient.alcohol-usage'),
-    processor: generateColumnProcessorFunction('alcohol-usage'),
+    dataIndex: 'profession',
+    title: t('patient.profession'),
   },
   {
-    field: 'useDrugs',
-    header: t('patient.use-drugs'),
-    isCompact: true,
-    processor: generateColumnProcessorFunction('boolean'),
+    dataIndex: 'salaryRange',
+    title: t('patient.salary-range'),
+    customRender: generateColumnProcessorFunction('salary-range'),
   },
   {
-    field: 'isPsychiatryInChildhood',
-    header: t('patient.is-psychiatry-in-childhood'),
-    processor: generateColumnProcessorFunction('boolean'),
-  },
-  { field: 'psychiatryTime', header: t('patient.psychiatry-time') },
-  {
-    field: 'isDiagnosisOfHyperactivityInChildhood',
-    header: t('patient.is-diagnosis-of-hyperactivity-in-childhood'),
-    isCompact: true,
-    processor: generateColumnProcessorFunction('boolean'),
+    dataIndex: 'medicinesCurrentlyUsed',
+    title: t('patient.medicines-currently-used'),
   },
   {
-    field: 'hyperactivityMedicineName',
-    header: t('patient.hyperactivity-medicine-name'),
+    dataIndex: 'alcoholUsage',
+    title: t('patient.alcohol-usage'),
+    customRender: generateColumnProcessorFunction('alcohol-usage'),
   },
   {
-    field: 'hyperactivityMedicineTime',
-    header: t('patient.hyperactivity-medicine-time'),
+    dataIndex: 'useDrugs',
+    title: t('patient.use-drugs'),
+    customRender: generateColumnProcessorFunction('boolean'),
   },
   {
-    field: 'motherEducation',
-    header: t('patient.mother-education'),
-    processor: generateColumnProcessorFunction('education'),
+    dataIndex: 'isPsychiatryInChildhood',
+    title: t('patient.is-psychiatry-in-childhood'),
+    customRender: generateColumnProcessorFunction('boolean'),
   },
   {
-    field: 'fatherEducation',
-    header: t('patient.father-education'),
-    processor: generateColumnProcessorFunction('education'),
+    dataIndex: 'psychiatryTime',
+    title: t('patient.psychiatry-time'),
   },
   {
-    field: 'parentingAttitude',
-    header: t('patient.parenting-attitude'),
-    processor: generateColumnProcessorFunction('parenting-attitude'),
+    dataIndex: 'isDiagnosisOfHyperactivityInChildhood',
+    title: t('patient.is-diagnosis-of-hyperactivity-in-childhood'),
+    customRender: generateColumnProcessorFunction('boolean'),
   },
-  { field: 'savedDate', header: t('patient.saved-date') },
-  { field: 'previousDiagnosis', header: t('patient.previous-diagnosis') },
+  {
+    dataIndex: 'hyperactivityMedicineName',
+    title: t('patient.hyperactivity-medicine-name'),
+  },
+  {
+    dataIndex: 'hyperactivityMedicineTime',
+    title: t('patient.hyperactivity-medicine-time'),
+  },
+  {
+    dataIndex: 'motherEducation',
+    title: t('patient.mother-education'),
+    customRender: generateColumnProcessorFunction('education'),
+  },
+  {
+    dataIndex: 'fatherEducation',
+    title: t('patient.father-education'),
+    customRender: generateColumnProcessorFunction('education'),
+  },
+  {
+    dataIndex: 'parentingAttitude',
+    title: t('patient.parenting-attitude'),
+    customRender: generateColumnProcessorFunction('parenting-attitude'),
+  },
+  { dataIndex: 'savedDate', title: t('patient.saved-date') },
+  {
+    dataIndex: 'previousDiagnosis',
+    title: t('patient.previous-diagnosis'),
+  },
 ];
 </script>
 
 <style scoped lang="scss">
 .patient-list__button {
-  @apply bg-primary-purple ml-auto rounded-xl flex font-semibold text-white text-lg py-4 px-6 items-center;
+  @apply rounded-xl flex font-semibold text-lg py-4 px-6 items-center;
+
+  &--add {
+    @apply bg-primary-purple text-white mr-4;
+  }
+
+  &--complete:not([disabled]) {
+    @apply bg-primary-purple text-white;
+  }
+
+  :deep(.anticon) {
+    @apply text-[20px] !important;
+  }
+}
+
+.patient-table {
+  :deep(.patient-table__row) {
+    @apply cursor-pointer;
+  }
 }
 </style>
 
@@ -187,5 +361,11 @@ tr:
   search: Arama
   change: Değiştir
   add: Ekle
+  remove: Sil
+  complete: Tamamla
+  cancel: İptal
   patient-records: Hasta Kayıtları
+  remove-request:
+    success: '{patientName} başarıyla silindi.'
+    error: '{patientName} silinirken bir hata ile karşılaşıldı.'
 </i18n>

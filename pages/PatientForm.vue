@@ -2,196 +2,118 @@
   <form
     class="relative patient-form overflow-auto"
     :class="{ 'opacity-60 pointer-events-none': isFetching }"
-    @submit.prevent="submitForm"
+    @submit.prevent
   >
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="name">
         {{ t('patient.name') }}:
       </label>
-      <InputText
+      <AntInput
         id="name"
         class="patient-form__input"
-        v-model="patientStore.form.name"
+        v-model:value="patientStore.form.name"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="last-name">
         {{ t('patient.last-name') }}:
       </label>
-      <InputText
+      <AntInput
         id="last-name"
         class="patient-form__input"
-        v-model="patientStore.form.lastName"
+        v-model:value="patientStore.form.lastName"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="tckn">
         {{ t('patient.tckn') }}:
       </label>
-      <InputText
+      <AntInput
         id="tckn"
         class="patient-form__input"
-        v-model="patientStore.form.tckn"
+        v-model:value="patientStore.form.tckn"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="birth-date">
         {{ t('patient.birth-date') }}:
       </label>
-      <Calendar
-        class="patient-form__input patient-form__input--calendar"
+      <AntDatePicker
+        class="patient-form__input"
         id="birth-date"
-        v-model="birthDate"
-        autocomplete="off"
-        date-format="yy - mm - dd"
-      />
-      <i
-        class="text-glossy-grape right-4 absolute pi pi-calendar !text-[24px]"
+        v-model:value="birthDate"
+        :allow-clear="false"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="age">
         {{ t('patient.age') }}:
       </label>
-      <InputText id="age" class="patient-form__input" v-model="age" />
+      <AntInput id="age" class="patient-form__input" v-model:value="age" />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="gender">
         {{ t('patient.gender') }}:
       </label>
-      <Dropdown
+      <AntSelect
         id="gender"
-        class="patient-form__input patient-form__input--dropdown"
-        v-model="patientStore.form.gender"
-        option-label="label"
-        option-value="value"
-        :options="[
-          { label: t('gender.male'), value: EGender.MALE },
-          { label: t('gender.female'), value: EGender.FEMALE },
-        ]"
+        class="patient-form__input"
+        v-model:value="patientStore.form.gender"
+        :options="genderOptions"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="marital-status">
         {{ t('patient.marital-status') }}:
       </label>
-      <Dropdown
+      <AntSelect
         id="marital-status"
-        class="patient-form__input patient-form__input--dropdown"
-        v-model="patientStore.form.maritalStatus"
-        option-label="label"
-        option-value="value"
-        :options="[
-          { label: t('marital-status.single'), value: EMaritalStatus.SINGLE },
-          { label: t('marital-status.married'), value: EMaritalStatus.MARRIED },
-          {
-            label: t('marital-status.divorced'),
-            value: EMaritalStatus.DIVORCED,
-          },
-          { label: t('marital-status.widowed'), value: EMaritalStatus.WIDOWED },
-        ]"
+        class="patient-form__input"
+        v-model:value="patientStore.form.maritalStatus"
+        :options="maritalStatusOptions"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="education">
         {{ t('patient.education') }}:
       </label>
-      <Dropdown
+      <AntSelect
         id="education"
-        class="patient-form__input patient-form__input--dropdown"
-        v-model="patientStore.form.education"
-        option-label="label"
-        option-value="value"
-        :options="[
-          {
-            label: t('education.primary-school'),
-            value: EEducation.PRIMARY_SCHOOL,
-          },
-          {
-            label: t('education.secondary-school'),
-            value: EEducation.SECONDARY_SCHOOL,
-          },
-          { label: t('education.high-school'), value: EEducation.HIGH_SCHOOL },
-          { label: t('education.university'), value: EEducation.UNIVERSITY },
-          {
-            label: t('education.master-of-science'),
-            value: EEducation.MASTER_OF_SCIENCE,
-          },
-          {
-            label: t('education.doctor-of-philosophy'),
-            value: EEducation.DOCTOR_OF_PHILOSOPHY,
-          },
-        ]"
+        class="patient-form__input"
+        v-model:value="patientStore.form.education"
+        :options="educationOptions"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="profession">
         {{ t('patient.profession') }}:
       </label>
-      <InputText
+      <AntInput
         id="profession"
         class="patient-form__input"
-        v-model="patientStore.form.profession"
+        v-model:value="patientStore.form.profession"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="salary-range">
         {{ t('patient.salary-range') }}:
       </label>
-      <Dropdown
+      <AntSelect
         id="salary-range"
-        class="patient-form__input patient-form__input--dropdown"
-        v-model="patientStore.form.salaryRange"
-        option-label="label"
-        option-value="value"
-        :options="[
-          {
-            label: t('salary-range.under-5000'),
-            value: ESalaryRange.UNDER_5000,
-          },
-          {
-            label: t('salary-range.between-5000-10000'),
-            value: ESalaryRange.BETWEEN_5000_10000,
-          },
-          {
-            label: t('salary-range.above-10000'),
-            value: ESalaryRange.ABOVE_10000,
-          },
-        ]"
+        class="patient-form__input"
+        v-model:value="patientStore.form.salaryRange"
+        :options="salaryRangeOptions"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="alcohol-usage">
         {{ t('patient.alcohol-usage') }}:
       </label>
-      <Dropdown
+      <AntSelect
         id="alcohol-usage"
-        class="patient-form__input patient-form__input--dropdown"
-        v-model="patientStore.form.alcoholUsage"
-        option-label="label"
-        option-value="value"
-        :options="[
-          {
-            label: t('alcohol-usage.never'),
-            value: EAlcoholUsage.NEVER,
-          },
-          {
-            label: t('alcohol-usage.sometimes'),
-            value: EAlcoholUsage.SOMETIMES,
-          },
-          {
-            label: t('alcohol-usage.often'),
-            value: EAlcoholUsage.OFTEN,
-          },
-          {
-            label: t('alcohol-usage.every-day'),
-            value: EAlcoholUsage.EVERY_DAY,
-          },
-          {
-            label: t('alcohol-usage.always'),
-            value: EAlcoholUsage.ALWAYS,
-          },
-        ]"
+        class="patient-form__input"
+        v-model:value="patientStore.form.alcoholUsage"
+        :options="alcoholUsageOptions"
       />
     </div>
     <div class="patient-form__field">
@@ -202,13 +124,7 @@
       >
         {{ t('patient.use-drugs') }}:
       </label>
-      <ToggleButton
-        v-model="patientStore.form.useDrugs"
-        on-icon="pi pi-check"
-        off-icon="pi pi-times"
-        :on-label="t('yes')"
-        :off-label="t('no')"
-      />
+      <AntSwitch id="use-drugs" v-model:checked="patientStore.form.useDrugs" />
     </div>
     <div class="patient-form__field">
       <label
@@ -218,22 +134,19 @@
       >
         {{ t('patient.is-psychiatry-in-childhood') }}:
       </label>
-      <ToggleButton
-        v-model="patientStore.form.isPsychiatryInChildhood"
-        on-icon="pi pi-check"
-        off-icon="pi pi-times"
-        :on-label="t('yes')"
-        :off-label="t('no')"
+      <AntSwitch
+        id="is-psychiatry-in-childhood"
+        v-model:checked="patientStore.form.isPsychiatryInChildhood"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="psychiatry-time">
         {{ t('patient.psychiatry-time') }}:
       </label>
-      <InputText
+      <AntInput
         id="psychiatry-time"
         class="patient-form__input"
-        v-model="psychiatryTime"
+        v-model:value="psychiatryTime"
       />
     </div>
     <div class="patient-form__field">
@@ -244,12 +157,11 @@
       >
         {{ t('patient.is-diagnosis-of-hyperactivity-in-childhood') }}:
       </label>
-      <ToggleButton
-        v-model="patientStore.form.isDiagnosisOfHyperactivityInChildhood"
-        on-icon="pi pi-check"
-        off-icon="pi pi-times"
-        :on-label="t('yes')"
-        :off-label="t('no')"
+      <AntSwitch
+        id="is-diagnosis-of-hyperactivity-in-childhood"
+        v-model:checked="
+          patientStore.form.isDiagnosisOfHyperactivityInChildhood
+        "
       />
     </div>
     <div class="patient-form__field">
@@ -260,10 +172,10 @@
       >
         {{ t('patient.hyperactivity-medicine-name') }}:
       </label>
-      <InputText
+      <AntInput
         id="hyperactivity-medicine-name"
         class="patient-form__input"
-        v-model="patientStore.form.hyperactivityMedicineName"
+        v-model:value="patientStore.form.hyperactivityMedicineName"
       />
     </div>
     <div class="patient-form__field">
@@ -273,140 +185,73 @@
       >
         {{ t('patient.hyperactivity-medicine-time') }}:
       </label>
-      <InputText
+      <AntInput
         id="hyperactivity-medicine-time"
         class="patient-form__input"
-        v-model="hyperactivityMedicineTime"
+        v-model:value="hyperactivityMedicineTime"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="mother-education">
         {{ t('patient.mother-education') }}:
       </label>
-      <Dropdown
-        id="education"
-        class="patient-form__input patient-form__input--dropdown"
-        v-model="patientStore.form.motherEducation"
-        option-label="label"
-        option-value="value"
-        :options="[
-          {
-            label: t('education.primary-school'),
-            value: EEducation.PRIMARY_SCHOOL,
-          },
-          {
-            label: t('education.secondary-school'),
-            value: EEducation.SECONDARY_SCHOOL,
-          },
-          { label: t('education.high-school'), value: EEducation.HIGH_SCHOOL },
-          { label: t('education.university'), value: EEducation.UNIVERSITY },
-          {
-            label: t('education.master-of-science'),
-            value: EEducation.MASTER_OF_SCIENCE,
-          },
-          {
-            label: t('education.doctor-of-philosophy'),
-            value: EEducation.DOCTOR_OF_PHILOSOPHY,
-          },
-        ]"
+      <AntSelect
+        id="mother-education"
+        class="patient-form__input"
+        v-model:value="patientStore.form.motherEducation"
+        :options="educationOptions"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="father-education">
         {{ t('patient.father-education') }}:
       </label>
-      <Dropdown
-        id="education"
-        class="patient-form__input patient-form__input--dropdown"
-        v-model="patientStore.form.fatherEducation"
-        option-label="label"
-        option-value="value"
-        :options="[
-          {
-            label: t('education.primary-school'),
-            value: EEducation.PRIMARY_SCHOOL,
-          },
-          {
-            label: t('education.secondary-school'),
-            value: EEducation.SECONDARY_SCHOOL,
-          },
-          { label: t('education.high-school'), value: EEducation.HIGH_SCHOOL },
-          { label: t('education.university'), value: EEducation.UNIVERSITY },
-          {
-            label: t('education.master-of-science'),
-            value: EEducation.MASTER_OF_SCIENCE,
-          },
-          {
-            label: t('education.doctor-of-philosophy'),
-            value: EEducation.DOCTOR_OF_PHILOSOPHY,
-          },
-        ]"
+      <AntSelect
+        id="father-education"
+        class="patient-form__input"
+        v-model:value="patientStore.form.fatherEducation"
+        :options="educationOptions"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="parenting-attitude">
         {{ t('patient.parenting-attitude') }}:
       </label>
-      <Dropdown
-        id="education"
-        class="patient-form__input patient-form__input--dropdown"
-        v-model="patientStore.form.parentingAttitude"
-        option-label="label"
-        option-value="value"
-        :options="[
-          {
-            label: t('parenting-attitude.democratic'),
-            value: EParentingAttitude.DEMOCRATIC,
-          },
-          {
-            label: t('parenting-attitude.autocratic'),
-            value: EParentingAttitude.AUTOCRATIC,
-          },
-          {
-            label: t('parenting-attitude.over-protective'),
-            value: EParentingAttitude.OVER_PROTECTIVE,
-          },
-          {
-            label: t('parenting-attitude.disinterested'),
-            value: EParentingAttitude.DISINTERESTED,
-          },
-        ]"
+      <AntSelect
+        id="parenting-attitude"
+        class="patient-form__input"
+        v-model:value="patientStore.form.parentingAttitude"
+        :options="parentingAttitudeOptions"
       />
     </div>
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="saved-date">
         {{ t('patient.saved-date') }}:
       </label>
-      <Calendar
-        class="patient-form__input patient-form__input--calendar"
+      <AntDatePicker
+        class="patient-form__input"
         id="saved-date"
-        v-model="savedDate"
-        autocomplete="off"
-        date-format="yy - mm - dd"
-      />
-      <i
-        class="text-glossy-grape right-4 absolute pi pi-calendar !text-[24px]"
+        v-model:value="savedDate"
+        :allow-clear="false"
       />
     </div>
-    <button
+    <AntButton
       class="patient-form__submit-button"
       :class="{ 'patient-form__submit-button--fetching': isFetching }"
-      type="submit"
+      :disabled="isFetching"
+      @click="submitForm"
     >
-      <i
-        class="pi !text-[20px]"
-        :class="{
-          'pi-spinner animate-spin mx-4': isFetching,
-          'pi-check-circle mr-2': !isFetching,
-        }"
-      />
-      <span v-if="!isFetching">{{ t('submit') }}</span>
-    </button>
+      <CheckCircleOutlined v-if="!isFetching" />
+      <LoadingOutlined class="animate-spin mx-4" v-else />
+      <span v-if="!isFetching">{{ t('submit') }}</span></AntButton
+    >
   </form>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
+import dayjs, { Dayjs } from 'dayjs';
+import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 
 import usePatientStore from '@/store/patient';
 import ERoutes from '@/enums/routes';
@@ -417,6 +262,8 @@ import ESalaryRange from '@/enums/salary-range';
 import EAlcoholUsage from '@/enums/alcohol-usage';
 import EParentingAttitude from '@/enums/parenting-attitude';
 import useSidenavStore from '@/store/sidenav';
+import IPatient from '@/interfaces/patient';
+import IServerResponse from '@/interfaces/server-response';
 
 definePageMeta({
   title: 'Patient Form',
@@ -433,20 +280,109 @@ const sidenavStore = useSidenavStore();
 
 const isFetching = ref(false);
 
+const genderOptions = [
+  { label: t('gender.male'), value: EGender.MALE },
+  { label: t('gender.female'), value: EGender.FEMALE },
+];
+
+const maritalStatusOptions = [
+  { label: t('marital-status.single'), value: EMaritalStatus.SINGLE },
+  { label: t('marital-status.married'), value: EMaritalStatus.MARRIED },
+  {
+    label: t('marital-status.divorced'),
+    value: EMaritalStatus.DIVORCED,
+  },
+  { label: t('marital-status.widowed'), value: EMaritalStatus.WIDOWED },
+];
+
+const educationOptions = [
+  {
+    label: t('education.primary-school'),
+    value: EEducation.PRIMARY_SCHOOL,
+  },
+  {
+    label: t('education.secondary-school'),
+    value: EEducation.SECONDARY_SCHOOL,
+  },
+  { label: t('education.high-school'), value: EEducation.HIGH_SCHOOL },
+  { label: t('education.university'), value: EEducation.UNIVERSITY },
+  {
+    label: t('education.master-of-science'),
+    value: EEducation.MASTER_OF_SCIENCE,
+  },
+  {
+    label: t('education.doctor-of-philosophy'),
+    value: EEducation.DOCTOR_OF_PHILOSOPHY,
+  },
+];
+
+const salaryRangeOptions = [
+  {
+    label: t('salary-range.under-5000'),
+    value: ESalaryRange.UNDER_5000,
+  },
+  {
+    label: t('salary-range.between-5000-10000'),
+    value: ESalaryRange.BETWEEN_5000_10000,
+  },
+  {
+    label: t('salary-range.above-10000'),
+    value: ESalaryRange.ABOVE_10000,
+  },
+];
+
+const alcoholUsageOptions = [
+  {
+    label: t('alcohol-usage.never'),
+    value: EAlcoholUsage.NEVER,
+  },
+  {
+    label: t('alcohol-usage.sometimes'),
+    value: EAlcoholUsage.SOMETIMES,
+  },
+  {
+    label: t('alcohol-usage.often'),
+    value: EAlcoholUsage.OFTEN,
+  },
+  {
+    label: t('alcohol-usage.every-day'),
+    value: EAlcoholUsage.EVERY_DAY,
+  },
+  {
+    label: t('alcohol-usage.always'),
+    value: EAlcoholUsage.ALWAYS,
+  },
+];
+
+const parentingAttitudeOptions = [
+  {
+    label: t('parenting-attitude.democratic'),
+    value: EParentingAttitude.DEMOCRATIC,
+  },
+  {
+    label: t('parenting-attitude.autocratic'),
+    value: EParentingAttitude.AUTOCRATIC,
+  },
+  {
+    label: t('parenting-attitude.over-protective'),
+    value: EParentingAttitude.OVER_PROTECTIVE,
+  },
+  {
+    label: t('parenting-attitude.disinterested'),
+    value: EParentingAttitude.DISINTERESTED,
+  },
+];
+
 // Computed
 
 const birthDate = computed({
   get: () => {
     return patientStore.form.birthDate
-      ? new Date(patientStore.form.birthDate)
+      ? dayjs(patientStore.form.birthDate)
       : undefined;
   },
-  set: (value: Date) => {
-    patientStore.form.birthDate = `${value.getFullYear()}-${
-      value.getMonth() + 1 < 10
-        ? '0' + (value.getMonth() + 1)
-        : value.getMonth() + 1
-    }-${value.getDate()}`;
+  set: (value: Dayjs) => {
+    patientStore.form.birthDate = value?.format('YYYY-MM-DD');
   },
 });
 
@@ -491,48 +427,81 @@ const hyperactivityMedicineTime = computed({
 const savedDate = computed({
   get: () => {
     return patientStore.form.savedDate
-      ? new Date(patientStore.form.savedDate)
+      ? dayjs(patientStore.form.savedDate)
       : undefined;
   },
-  set: (value: Date) => {
-    patientStore.form.savedDate = `${value.getFullYear()}-${
-      value.getMonth() + 1 < 10
-        ? '0' + (value.getMonth() + 1)
-        : value.getMonth() + 1
-    }-${value.getDate()}`;
+  set: (value: Dayjs) => {
+    patientStore.form.savedDate = value?.format('YYYY-MM-DD HH:mm:ss');
   },
 });
 
 // Methods
 
 const submitForm = async () => {
+  let response: IServerResponse;
+  const { type } = route.query;
   sidenavStore.isLoading = true;
   isFetching.value = true;
-  const respone = await $fetch('/api/patient/save', {
-    body: patientStore.form,
-    method: 'POST',
-  });
+
+  if (type === 'update') {
+    response = await $fetch<IServerResponse>(
+      `/api/patient/update?patientId=${patientStore.form.id}`,
+      {
+        body: patientStore.form,
+        method: 'PATCH',
+      }
+    );
+  } else if (type === 'add') {
+    response = await $fetch<IServerResponse>(`/api/patient/save`, {
+      body: patientStore.form,
+      method: 'POST',
+    });
+  }
   isFetching.value = false;
   sidenavStore.isLoading = false;
 
-  if (respone.status === 'success') {
+  if (response.status === 'success') {
     patientStore.resetForm();
     router.push(ERoutes.PATIENT_LIST);
   }
 };
 
+const fetchPatient = async (patientId: string) => {
+  isFetching.value = true;
+  sidenavStore.isLoading = true;
+  const result = await $fetch<IServerResponse>(
+    `/api/patient/get?patientId=${patientId}`
+  );
+  if (result.status === 'success') {
+    patientStore.form = result.data;
+  }
+  sidenavStore.isLoading = false;
+  isFetching.value = false;
+};
+
 // Life Cycle Hooks
 
-onMounted(() => {
+onMounted(async () => {
   const { type, patientId } = route.query;
 
-  setupSidenavStore(
-    t('patient-form.default') +
-      ' | ' +
-      t(`patient-form.${type}`) +
-      (type === 'update' ? ' | ' + patientId : ''),
-    ERoutes.PATIENT_FORM
-  );
+  setupSidenavStore(t('patient-form.default'), ERoutes.PATIENT_FORM);
+
+  if (type === 'update') {
+    patientStore.form =
+      patientStore.list.find(
+        (patient) => patient.id.toString() === patientId
+      ) || ({} as IPatient);
+
+    if (patientStore.form.id === undefined) {
+      await fetchPatient(patientId as string);
+    }
+
+    sidenavStore.pageTitle += ` | ${patientStore.formFullName}`;
+  }
+});
+
+onUnmounted(() => {
+  patientStore.resetForm();
 });
 </script>
 
@@ -542,17 +511,13 @@ onMounted(() => {
 }
 
 .patient-form__label {
-  @apply w-[160px] truncate;
+  @apply w-[160px] truncate flex-shrink-0;
 }
 
 .patient-form__input {
-  &:not(.patient-form__input--calendar):not(.patient-form__input--dropdown):not(.patient-form__input--checkbox) {
-    @apply border-none min-w-[420px] py-4 px-8;
+  &:not(.patient-form__input--dropdown):not(.patient-form__input--checkbox) {
+    @apply min-w-[420px];
     box-shadow: 0px 11px 23px 0px #00000005;
-  }
-
-  &--dropdown {
-    @apply border-none min-w-[420px] py-0.5 px-4;
   }
 
   :deep(input) {
@@ -562,11 +527,7 @@ onMounted(() => {
 }
 
 .patient-form__submit-button {
-  @apply bg-primary-purple rounded-xl flex justify-center shadow-reversed-pretty-one--light text-white mr-8 text-lg py-4 px-6 transition-box-shadow bottom-8 duration-200 float-right sticky items-center hover:shadow-reversed-pretty-one active:opacity-80;
-
-  &--fetching {
-    top: 50%;
-  }
+  @apply bg-primary-purple flex justify-center text-white text-lg bottom-8 float-right sticky items-center;
 }
 </style>
 

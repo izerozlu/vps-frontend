@@ -5,6 +5,7 @@ import EGender from '@/enums/gender';
 import EMaritalStatus from '@/enums/marital-status';
 import EParentingAttitude from '@/enums/parenting-attitude';
 import IDiagnosis from '@/interfaces/diagnosis';
+import { Key } from 'ant-design-vue/es/_util/type';
 
 interface IPatient {
   id: number;
@@ -32,7 +33,7 @@ interface IPatient {
   savedDate: string;
   // TODO [ozlui] Ask Dilsen about how to implement this field for the PatientForm
   previousDiagnosis: IDiagnosis[];
-  fullText?: string;
+  key?: Key;
 }
 
 export default IPatient;

@@ -16,35 +16,43 @@
       <BrandName />
       <div class="authentication__username authentication__input-field">
         <label class="authentication__label" for="username">
-          Kullanıcı Adı
+          {{ t('username') }}
         </label>
-        <InputText
+        <AntInput
           class="authentication__input"
           id="username"
           type="text"
-          v-model="username"
+          v-model:value="username"
         />
       </div>
       <div class="authentication__password authentication__input-field">
-        <label class="authentication__label" for="password"> Parola </label>
-        <InputText
+        <label class="authentication__label" for="password">
+          {{ t('password') }}
+        </label>
+        <AntInput
           class="authentication__input"
           id="password"
           type="password"
-          v-model="password"
+          v-model:value="password"
         />
       </div>
-      <Button
-        class="p-button--success authentication__submit-button"
-        label="Oturum Aç"
-        type="submit"
-        icon="pi pi-check-circle"
-      />
+      <AntButton
+        class="authentication__submit-button ant-btn--success"
+        html-type="submit"
+        :loading="isLoading"
+      >
+        <template #suffix> <CheckCircleOutlined /> </template>
+        {{ t('login') }}
+      </AntButton>
     </form>
   </section>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { useToast } from 'vue-toastification';
+import { CheckCircleOutlined, SearchOutlined } from '@ant-design/icons-vue';
+
 import useAuthenticationStore from '@/store/authentication';
 import ERoutes from '@/enums/routes';
 
@@ -53,6 +61,8 @@ definePageMeta({
   alias: ERoutes.AUTHENTICATION,
 });
 
+const { t } = useI18n();
+const toast = useToast();
 const router = useRouter();
 const authenticationStore = useAuthenticationStore();
 
@@ -67,6 +77,8 @@ const login = async () => {
 
   if (authenticationStore.isLoggedIn) {
     router.push(ERoutes.ADMIN_BOARD);
+  } else {
+    toast.error(t('login-error'), { timeout: 0 });
   }
 };
 </script>
@@ -84,3 +96,11 @@ const login = async () => {
   @apply border border-american-purple border-solid rounded-lg;
 }
 </style>
+
+<i18n lang="yaml">
+tr:
+  username: Kullanıcı Adı
+  password: Parola
+  login-error: Kullanıcı Adı veya Parola hatalı
+  login: Oturum Aç
+</i18n>

@@ -5,11 +5,10 @@ import svgLoader from 'vite-svg-loader';
 export default defineNuxtConfig({
   modules: ['@pinia/nuxt', 'nuxt-windicss', '@intlify/nuxt3'],
   css: [
+    'ant-design-vue/dist/antd.css',
+    'vue-toastification/dist/index.css',
     '~/assets/styles/main.scss',
     '~/assets/styles/fonts.scss',
-    'primevue/resources/themes/mdc-light-indigo/theme.css',
-    'primevue/resources/primevue.css',
-    'primeicons/primeicons.css',
   ],
   build: {
     transpile: ['primevue'],
@@ -23,6 +22,8 @@ export default defineNuxtConfig({
   intlify: {
     vueI18n: {
       locale: 'tr',
+      missingWarn: false,
+      fallbackWarn: false,
     },
   },
 });
