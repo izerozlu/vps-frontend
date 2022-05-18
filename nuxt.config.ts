@@ -4,6 +4,7 @@ import svgLoader from 'vite-svg-loader';
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   modules: ['@pinia/nuxt', 'nuxt-windicss', '@intlify/nuxt3'],
+  ssr: false,
   css: [
     'ant-design-vue/dist/antd.css',
     'vue-toastification/dist/index.css',
@@ -18,7 +19,6 @@ export default defineNuxtConfig({
   vite: {
     plugins: [svgLoader()],
   },
-  // @ts-ignore
   intlify: {
     vueI18n: {
       locale: 'tr',
