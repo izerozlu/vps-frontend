@@ -10,33 +10,33 @@ const useAuthenticationStore = defineStore('authentication', {
   },
   actions: {
     async login(username: string, password: string) {
-      const result = await $fetch<{ status: 'success' | 'fail' }>(
-        '/api/authentication/login',
-        {
+      await handleResponse(
+        $fetch<{ status: 'success' | 'fail' }>('/api/authentication/login', {
           method: 'POST',
           body: { username, password },
+        }),
+        {
+          success: () => {
+            this.username = username;
+            this.isLoggedIn = true;
+          },
         }
       );
-
-      if (result.status === 'success') {
-        this.username = username;
-        this.isLoggedIn = true;
-      }
     },
     async logout() {
       if (this.username) {
-        const result = await $fetch<{ status: 'success' | 'fail' }>(
-          '/api/authentication/logout',
-          {
+        await handleResponse(
+          $fetch<{ status: 'success' | 'fail' }>('/api/authentication/logout', {
             method: 'POST',
             body: { username: this.username },
+          }),
+          {
+            success: () => {
+              this.username = null;
+              this.isLoggedIn = false;
+            },
           }
         );
-
-        if (result.status === 'success') {
-          this.username = null;
-          this.isLoggedIn = false;
-        }
       }
     },
   },

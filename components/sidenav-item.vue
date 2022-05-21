@@ -1,19 +1,14 @@
 <template>
   <NuxtLink
     class="rounded-lg cursor-pointer flex font-bold text-base w-full p-5 sidenav-item items-center hover:opacity-75 active:opacity-90"
-    :class="{ 'sidenav-item--active bg-american-purple': isActive }"
     :to="item.route"
   >
     <!-- Icon importing resolution is taken from https://github.com/jpkleemans/vite-svg-loader/issues/19#issuecomment-902575584 via https://github.com/MuzafferDede -->
     <component
-      class="h-6 mr-8 w-6 sidenav-item__icon"
-      :class="{ 'stroke-white': isActive, 'stroke-glossy-grape': !isActive }"
+      class="h-6 mr-8 w-6 sidenav-item__icon stroke-glossy-grape"
       :is="icon"
     />
-    <span
-      class="font-semibold mr-6 sidenav-item__label"
-      :class="{ 'text-white': isActive, 'text-glossy-gray': !isActive }"
-    >
+    <span class="font-semibold mr-6 sidenav-item__label text-glossy-gray">
       {{ item.label }}
     </span>
     <RightArrowSvg
@@ -49,3 +44,16 @@ const isActive = computed(() => {
   );
 });
 </script>
+
+<style lang="scss">
+.router-link-active {
+  @apply bg-american-purple;
+
+  .sidenav-item__icon {
+    @apply stroke-white;
+  }
+  .sidenav-item__label {
+    @apply text-white;
+  }
+}
+</style>

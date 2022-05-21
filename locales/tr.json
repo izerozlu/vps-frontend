@@ -2,6 +2,9 @@
     "admin": "Admin",
     "yes": "Evet",
     "no": "Hayır",
+    "error-messages": {
+        "unknown": "Sunucu tarafında bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz."
+    },
     "patient": {
         "name": "Hasta Adı",
         "last-name": "Hasta Soyadı",

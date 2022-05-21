@@ -1,6 +1,6 @@
 import ERoutes from '@/enums/routes';
-import { useI18n } from 'vue-i18n';
 import useSidenavStore from '@/store/sidenav';
+import { useI18n } from 'vue-i18n';
 
 const setupSidenavStore = (
   pageTitle?: string,

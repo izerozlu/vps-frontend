@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useToast } from 'vue-toastification';
-import { CheckCircleOutlined, SearchOutlined } from '@ant-design/icons-vue';
+import { CheckCircleOutlined } from '@ant-design/icons-vue';
 
 import useAuthenticationStore from '@/store/authentication';
 import ERoutes from '@/enums/routes';

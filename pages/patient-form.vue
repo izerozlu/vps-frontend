@@ -438,43 +438,50 @@ const savedDate = computed({
 // Methods
 
 const submitForm = async () => {
-  let response: IServerResponse;
   const { type } = route.query;
   sidenavStore.isLoading = true;
   isFetching.value = true;
+  const callbacks = {
+    success: () => {
+      patientStore.resetForm();
+      router.push(ERoutes.PATIENT_LIST);
+    },
+  };
 
   if (type === 'update') {
-    response = await $fetch<IServerResponse>(
-      `/api/patient/update?patientId=${patientStore.form.id}`,
-      {
-        body: patientStore.form,
-        method: 'PATCH',
-      }
+    await handleResponse(
+      $fetch<IServerResponse>(
+        `/api/patient/update?patientId=${patientStore.form.id}`,
+        {
+          body: patientStore.form,
+          method: 'PATCH',
+        }
+      ),
+      callbacks
     );
   } else if (type === 'add') {
-    response = await $fetch<IServerResponse>(`/api/patient/save`, {
-      body: patientStore.form,
-      method: 'POST',
-    });
+    await handleResponse(
+      $fetch<IServerResponse>('/api/patient/save', {
+        body: patientStore.form,
+        method: 'POST',
+      }),
+      callbacks
+    );
   }
   isFetching.value = false;
   sidenavStore.isLoading = false;
-
-  if (response.status === 'success') {
-    patientStore.resetForm();
-    router.push(ERoutes.PATIENT_LIST);
-  }
 };
 
 const fetchPatient = async (patientId: string) => {
   isFetching.value = true;
   sidenavStore.isLoading = true;
-  const result = await $fetch<IServerResponse>(
-    `/api/patient/get?patientId=${patientId}`
+  await handleResponse(
+    $fetch<IServerResponse>(`/api/patient/get?patientId=${patientId}`),
+    {
+      success: (response: IServerResponse) =>
+        (patientStore.form = response.data),
+    }
   );
-  if (result.status === 'success') {
-    patientStore.form = result.data;
-  }
   sidenavStore.isLoading = false;
   isFetching.value = false;
 };

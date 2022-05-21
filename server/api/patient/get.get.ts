@@ -1,12 +1,6 @@
+import sendRequest from '@/server/utils/send-request';
+
 export default defineEventHandler(async (event) => {
   const query = useQuery(event);
-  const response = await fetch(
-    `http://localhost:8090/patients/${query.patientId}`,
-    {
-      headers: { 'Content-Type': 'application/json' },
-      method: 'GET',
-    }
-  );
-  const result = await response.json();
-  return { data: result, status: response.status === 200 ? 'success' : 'fail' };
+  return await sendRequest(`/patients/${query.patientId}`);
 });

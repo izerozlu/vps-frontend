@@ -1,6 +1,5 @@
-export default defineEventHandler(async (event) => {
-  const response = await fetch('http://localhost:8090/patients');
-  const result = await response.json();
+import sendRequest from '~~/server/utils/send-request';
 
-  return { data: result, status: response.status === 200 ? 'success' : 'fail' };
+export default defineEventHandler(async (event) => {
+  return await sendRequest('/patients');
 });
