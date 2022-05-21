@@ -83,6 +83,8 @@ import useSidenavStore from '@/store/sidenav';
 import ERoutes from '@/enums/routes';
 import IServerResponse from '@/interfaces/server-response';
 import IPatient from '@/interfaces/patient';
+import setupSidenavStore from '@/utils/setup-sidenav-store';
+import handleResponse from '@/utils/handle-response';
 
 definePageMeta({
   title: 'Patient List',
@@ -165,39 +167,28 @@ const completeRemoval = async () => {
     selectedRowKeys.value.map(async (key) => {
       const { id, name, lastName } = filteredPatients.value[key];
       const patientName = `${name} ${lastName}`;
-      const response = await $fetch<IServerResponse>(
-        `/api/patient/delete?patientId=${id}`,
-        {
+      await handleResponse(
+        $fetch<IServerResponse>(`/api/patient/delete?patientId=${id}`, {
           method: 'DELETE',
+        }),
+        {
+          success: () => {
+            toast.success(
+              t('remove-request.success', {
+                patientName,
+              })
+            );
+          },
+          error: () => {
+            toast.error(
+              t('remove-request.error', {
+                patientName,
+              }),
+              { timeout: 0 }
+            );
+          },
         }
       );
-      if (response.status === 'fail') {
-        toast.error(
-          t('remove-request.error', {
-            patientName,
-          }),
-          { timeout: 0 }
-        );
-      }
-      // await handleResponse(
-      //   {
-      //     success: () => {
-      //       toast.success(
-      //         t('remove-request.success', {
-      //           patientName,
-      //         })
-      //       );
-      //     },
-      //     error: () => {
-      //       toast.error(
-      //         t('remove-request.error', {
-      //           patientName,
-      //         }),
-      //         { timeout: 0 }
-      //       );
-      //     },
-      //   }
-      // );
     })
   );
 
@@ -221,16 +212,10 @@ const generateColumnProcessorFunction = (parentKey: string) => {
 
 const fetchPatients = async () => {
   sidenavStore.isLoading = true;
-  // await handleResponse($fetch('/api/patient/list'), {
-  //   success: (response: IServerResponse) =>
-  //     (patientStore.list = response.data.list),
-  // });
-  const response: IServerResponse = await $fetch('/api/patient/list');
-
-  if (response.status === 'success') {
-    patientStore.list = response.data.list;
-  }
-
+  await handleResponse($fetch('/api/patient/list'), {
+    success: (response: IServerResponse) =>
+      (patientStore.list = response.data.list),
+  });
   sidenavStore.isLoading = false;
 };
 

@@ -264,6 +264,8 @@ import EParentingAttitude from '@/enums/parenting-attitude';
 import useSidenavStore from '@/store/sidenav';
 import IPatient from '@/interfaces/patient';
 import IServerResponse from '@/interfaces/server-response';
+import setupSidenavStore from '@/utils/setup-sidenav-store';
+import handleResponse from '@/utils/handle-response';
 
 definePageMeta({
   title: 'Patient Form',

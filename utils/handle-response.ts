@@ -1,6 +1,5 @@
 import { useToast } from 'vue-toastification';
 import IServerResponse from '@/interfaces/server-response';
-import { useI18n } from 'vue-i18n';
 
 const handleResponse = async (
   response: Promise<IServerResponse>,
@@ -10,17 +9,21 @@ const handleResponse = async (
   }
 ) => {
   const toast = useToast();
-  const { t } = useI18n();
-  const result = await response;
 
-  if (result.status === 'success') {
-    callbacks.success(result);
-  } else {
-    if (callbacks.error) {
-      callbacks.error(result.data);
+  try {
+    const result = await response;
+    if (result.status === 'success') {
+      callbacks.success(result);
     } else {
-      toast.error(t('error-messages.unknown'), { timeout: 0 });
+      if (callbacks.error) {
+        callbacks.error(result.data);
+      }
     }
+  } catch (error) {
+    toast.error('Something went horribly wrong! Check console for details.', {
+      timeout: 0,
+    });
+    console.error(error);
   }
 };
 

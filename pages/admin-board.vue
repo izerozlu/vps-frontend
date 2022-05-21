@@ -44,9 +44,8 @@ import { useI18n } from 'vue-i18n';
 
 import RightArrowSvg from '@/assets/icons/right-arrow.svg?component';
 import ERoutes from '@/enums/routes';
-import useSidenavStore from '@/store/sidenav';
+import setupSidenavStore from '@/utils/setup-sidenav-store';
 
-const sidenavStore = useSidenavStore();
 const { t } = useI18n();
 
 definePageMeta({

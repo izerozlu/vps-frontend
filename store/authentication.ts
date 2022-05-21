@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import EAuthentication from '@/enums/authentication';
+import handleResponse from '@/utils/handle-response';
 
 const useAuthenticationStore = defineStore('authentication', {
   state: () => {
