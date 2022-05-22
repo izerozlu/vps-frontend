@@ -1,5 +1,8 @@
 <template>
-  <div class="flex flex-col h-min-[200px] patient-list basis-full">
+  <div
+    class="flex flex-col h-min-[200px] patient-list basis-full"
+    :class="{ 'pointer-events-none opacity-70': sidenavStore.isLoading }"
+  >
     <div class="flex mb-6 patient-list__search-and-actions">
       <AntInput
         class="h-14 w-full patient-list__search !w-60 !border-none !rounded-xl !py-0 !pl-10 mr-auto"
@@ -85,6 +88,7 @@ import IServerResponse from '@/interfaces/server-response';
 import IPatient from '@/interfaces/patient';
 import setupSidenavStore from '@/utils/setup-sidenav-store';
 import handleResponse from '@/utils/handle-response';
+import generateColumnProcessorFunction from '@/utils/column-processor';
 
 definePageMeta({
   title: 'Patient List',
@@ -194,36 +198,18 @@ const completeRemoval = async () => {
 
   sidenavStore.isLoading = false;
   cancelRemoval();
-  fetchPatients();
-};
-
-const processEnumKey = (key: string | boolean | undefined) => {
-  return key?.toString().toLowerCase().replace(/[_]/g, '-');
+  patientStore.fetchPatients();
 };
 
 const setDebouncedQuery = debounce(400, false, (value: string) => {
   debouncedQuery.value = value;
 });
 
-const generateColumnProcessorFunction = (parentKey: string) => {
-  return ({ value }: { value: string }) =>
-    value ? t(`${parentKey}.${processEnumKey(value)}`) : null;
-};
-
-const fetchPatients = async () => {
-  sidenavStore.isLoading = true;
-  await handleResponse($fetch('/api/patient/list'), {
-    success: (response: IServerResponse) =>
-      (patientStore.list = response.data.list),
-  });
-  sidenavStore.isLoading = false;
-};
-
 // Life Cycle Hooks
 
 onMounted(() => {
   setupSidenavStore(t('patient-records'), ERoutes.PATIENT_LIST);
-  fetchPatients();
+  patientStore.fetchPatients();
 });
 
 const columns = [

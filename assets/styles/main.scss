@@ -26,6 +26,10 @@ body,
   .ant-select-selector {
     @apply py-3 px-8 !border-none h-[unset];
   }
+
+  .ant-select-arrow {
+    @apply text-black;
+  }
 }
 
 .ant-switch.ant-switch-checked {

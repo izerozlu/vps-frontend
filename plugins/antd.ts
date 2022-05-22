@@ -7,6 +7,7 @@ import {
   Switch,
   Button,
   Table,
+  SelectOption,
 } from 'ant-design-vue/lib';
 
 export default defineNuxtPlugin(({ vueApp: app }) => {
@@ -14,6 +15,7 @@ export default defineNuxtPlugin(({ vueApp: app }) => {
   app.component('AntDatePicker', DatePicker);
   app.component('AntConfigProvider', ConfigProvider);
   app.component('AntSelect', Select);
+  app.component('AntSelectOption', SelectOption);
   app.component('AntSwitch', Switch);
   app.component('AntButton', Button);
   app.component('AntTable', Table);

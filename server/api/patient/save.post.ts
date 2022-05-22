@@ -1,4 +1,4 @@
-import sendRequest from '~~/server/utils/send-request';
+import sendRequest from '@/server/utils/send-request';
 
 export default defineEventHandler(async (event) => {
   const body = await useBody(event);

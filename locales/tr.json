@@ -3,7 +3,10 @@
     "yes": "Evet",
     "no": "Hayır",
     "error-messages": {
-        "unknown": "Sunucu tarafında bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz."
+        "unknown": "Sunucu tarafında bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz.",
+        "diagnosis": {
+            "fetch": "Sunucudan Tanı getirirken bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz."
+        }
     },
     "patient": {
         "name": "Hasta Adı",
@@ -71,5 +74,12 @@
         "autocratic": "Otonom",
         "over-protective": "Fazla koruyucu",
         "disinterested": "İlgisiz"
+    },
+    "diagnosis": {
+        "name": "Tanı İsmi",
+        "is-medication": "İlaç Kullanımı",
+        "medicine-name": "İlaç Adı",
+        "medicine-time": "İlaç Zamanı",
+        "diagnosis-date": "Tanı Tarihi"
     }
 }

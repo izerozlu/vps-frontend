@@ -13,7 +13,9 @@ const sendRequest = async (
       body,
     });
     result = await response.json();
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 
   return {
     data: result || null,

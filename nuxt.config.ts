@@ -1,9 +1,11 @@
 import { defineNuxtConfig } from 'nuxt';
 import svgLoader from 'vite-svg-loader';
+import path from 'path';
+import vueI18n from '@intlify/vite-plugin-vue-i18n';
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  modules: ['@pinia/nuxt', 'nuxt-windicss', '@intlify/nuxt3'],
+  modules: ['@pinia/nuxt', 'nuxt-windicss'],
   ssr: false,
   css: [
     'ant-design-vue/dist/antd.css',
@@ -17,13 +19,11 @@ export default defineNuxtConfig({
   // @ts-ignore: vite-svg-loader has to be included via vite.plugins congiguration but something is off with types
   // https://github.com/nuxt-community/svg-module/issues/86#issuecomment-944341678
   vite: {
-    plugins: [svgLoader()],
-  },
-  intlify: {
-    vueI18n: {
-      locale: 'tr',
-      missingWarn: false,
-      fallbackWarn: false,
-    },
+    plugins: [
+      svgLoader(),
+      vueI18n({
+        include: path.resolve(__dirname, './locales/**'),
+      }),
+    ],
   },
 });
