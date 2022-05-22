@@ -17,14 +17,6 @@ const useDiagnosisStore = defineStore('diagnosis', {
     };
   },
   actions: {
-    diagnosisList() {
-      return Object.entries(this.diagnosisPatientMap).reduce(
-        (diagnosisList: IDiagnosis[], [patientId, diagnosis]) => {
-          return [...diagnosisList, diagnosis];
-        },
-        []
-      );
-    },
     setSelectedPatient(patientId: number) {
       const patientStore = usePatientStore();
       const patient = patientStore.list.find(
@@ -38,10 +30,14 @@ const useDiagnosisStore = defineStore('diagnosis', {
       const patientId = diagnosis.patient.id;
       this.diagnosisPatientMap[patientId] = diagnosis;
     },
-    async fetchDiagnosisOfPatient(patientId: IPatient['id']) {
+    async fetchDiagnosisOfPatient(patientId?: IPatient['id']) {
       const sidenavStore = useSidenavStore();
       const toast = useToast();
       const { t } = i18n.global;
+
+      if (!patientId) {
+        patientId = this.selectedPatient?.id;
+      }
 
       sidenavStore.isLoading = true;
       await handleResponse(
@@ -60,8 +56,23 @@ const useDiagnosisStore = defineStore('diagnosis', {
       );
       sidenavStore.isLoading = false;
     },
+    resetForm() {
+      this.form = {};
+    },
   },
-  getters: {},
+  getters: {
+    diagnosisList(): IDiagnosis[] {
+      return Object.entries(this.diagnosisPatientMap).reduce(
+        (
+          diagnosisList: IDiagnosis[],
+          [patientId, diagnosis]: [string, IDiagnosis]
+        ) => {
+          return [...diagnosisList, diagnosis];
+        },
+        []
+      );
+    },
+  },
 });
 
 export default useDiagnosisStore;

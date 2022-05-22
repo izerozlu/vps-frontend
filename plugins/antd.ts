@@ -8,6 +8,7 @@ import {
   Button,
   Table,
   SelectOption,
+  Tooltip,
 } from 'ant-design-vue/lib';
 
 export default defineNuxtPlugin(({ vueApp: app }) => {
@@ -19,4 +20,5 @@ export default defineNuxtPlugin(({ vueApp: app }) => {
   app.component('AntSwitch', Switch);
   app.component('AntButton', Button);
   app.component('AntTable', Table);
+  app.component('AntTooltip', Tooltip);
 });

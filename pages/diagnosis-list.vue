@@ -3,8 +3,18 @@
     class="flex flex-col h-min-[200px] diagnosis-list basis-full"
     :class="{ 'pointer-events-none opacity-70': sidenavStore.isLoading }"
   >
-    <div class="flex mb-6 diagnosis-list__search-and-actions items-center">
-      <PatientSelector />
+    <div class="flex mb-6 diagnosis-list__search-and-actions items-center h-16">
+      <AntTooltip
+        :visible="!diagnosisStore.selectedPatient?.id"
+        placement="right"
+      >
+        <template #title>
+          <span class="block text-center">
+            {{ t('cannot-list-without-patient') }}
+          </span>
+        </template>
+        <PatientSelector />
+      </AntTooltip>
       <NuxtLink
         class="diagnosis-list__button diagnosis-list__button--add ml-auto"
         v-if="!isRemoving"
@@ -75,7 +85,7 @@ import usePatientStore from '@/store/patient';
 import useSidenavStore from '@/store/sidenav';
 import useDiagnosisStore from '@/store/diagnosis';
 
-import PatientSelector from '~~/components/patient-selector.vue';
+import PatientSelector from '@/components/patient-selector.vue';
 import ERoutes from '@/enums/routes';
 import IServerResponse from '@/interfaces/server-response';
 import setupSidenavStore from '@/utils/setup-sidenav-store';
@@ -183,6 +193,9 @@ const completeRemoval = async () => {
 onMounted(() => {
   patientStore.fetchPatients();
   setupSidenavStore(t('diagnosis-list'), ERoutes.DIAGNOSIS_LIST);
+  if (diagnosisStore.selectedPatient?.id) {
+    diagnosisStore.fetchDiagnosisOfPatient();
+  }
 });
 
 const columns = [
@@ -235,6 +248,7 @@ tr:
   remove: Sil
   complete: Tamamla
   cancel: İptal
+  cannot-list-without-patient: Hasta seçmeden tanıları listeleyemezsiniz.
   remove-request:
     success: '{diagnosisName} başarıyla silindi.'
     error: '{diagnosisName} silinirken bir hata ile karşılaşıldı.'

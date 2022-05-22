@@ -4,7 +4,8 @@ enum ERoutes {
   AUTHENTICATION = '/authentication',
   PATIENT_LIST = '/patient-list',
   PATIENT_FORM = '/patient-form',
-  DIAGNOSIS_LIST = '/patient-diagnosis',
+  DIAGNOSIS_LIST = '/diagnosis-list',
+  DIAGNOSIS_FORM = '/diagnosis-form',
 }
 
 export default ERoutes;

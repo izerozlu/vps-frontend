@@ -1,6 +1,6 @@
 import sendRequest from '@/server/utils/send-request';
 
 export default defineEventHandler(async (event) => {
-  const query = await useQuery(event);
-  return await sendRequest(`/diagnosis/${query.diagnosisId}`, 'DELETE');
+  const body = await useBody(event);
+  return await sendRequest('/diagnosis/', 'POST', JSON.stringify(body));
 });

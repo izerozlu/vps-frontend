@@ -4,6 +4,7 @@
     :class="{ 'opacity-60 pointer-events-none': isFetching }"
     @submit.prevent
   >
+    <!-- TODO [ozlui] add required field validation -->
     <div class="patient-form__field">
       <label class="mr-16 patient-form__label" for="name">
         {{ t('patient.name') }}:
