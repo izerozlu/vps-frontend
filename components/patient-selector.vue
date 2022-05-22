@@ -3,6 +3,7 @@
     id="patient"
     class="diagnosis-list__patient w-[240px]"
     :placeholder="t('select-patient')"
+    :value="diagnosisStore.selectedPatient?.id"
     @select="diagnosisStore.setSelectedPatient"
   >
     <AntSelectOption :value="patient.id" v-for="patient in patientStore.list">
