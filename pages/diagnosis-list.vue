@@ -248,7 +248,7 @@ tr:
   remove: Sil
   complete: Tamamla
   cancel: İptal
-  cannot-list-without-patient: Hasta seçmeden tanıları listeleyemezsiniz.
+  cannot-list-without-patient: Tanıları listelemek için Hasta seçmelisiniz.
   remove-request:
     success: '{diagnosisName} başarıyla silindi.'
     error: '{diagnosisName} silinirken bir hata ile karşılaşıldı.'
