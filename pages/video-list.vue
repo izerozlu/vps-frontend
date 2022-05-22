@@ -1,34 +1,31 @@
 <template>
   <div
-    class="flex flex-col h-min-[200px] diagnosis-list basis-full"
+    class="flex flex-col h-min-[200px] video-list basis-full"
     :class="{ 'pointer-events-none opacity-70': sidenavStore.isLoading }"
   >
-    <div class="flex mb-6 diagnosis-list__search-and-actions items-center h-16">
-      <AntTooltip
-        :visible="!diagnosisStore.selectedPatient?.id"
-        placement="right"
-      >
+    <div class="flex mb-6 video-list__search-and-actions items-center h-16">
+      <AntTooltip :visible="!videoStore.selectedPatient?.id" placement="right">
         <template #title>
           <span class="block text-center">
             {{ t('cannot-list-without-patient') }}
           </span>
         </template>
         <PatientSelector
-          :set-selected-patient="diagnosisStore.setSelectedPatient"
-          :selected-patient-id="diagnosisStore.selectedPatient?.id"
+          :set-selected-patient="videoStore.setSelectedPatient"
+          :selected-patient-id="videoStore.selectedPatient?.id"
         />
       </AntTooltip>
+      <!-- TODO [ozlui] add functionality -->
       <NuxtLink
-        class="diagnosis-list__button diagnosis-list__button--add ml-auto"
+        class="video-list__button video-list__button--add ml-auto"
         v-if="!isRemoving"
-        :to="ERoutes.DIAGNOSIS_FORM"
       >
         <PlusCircleOutlined class="mr-2" />
         <span class="w-full">{{ t('add') }}</span>
       </NuxtLink>
       <AntButton
-        class="diagnosis-list__button diagnosis-list__button--remove"
-        :class="{ 'diagnosis-list__button--complete mr-4 ml-auto': isRemoving }"
+        class="video-list__button video-list__button--remove"
+        :class="{ 'video-list__button--complete mr-4 ml-auto': isRemoving }"
         :disabled="isRemoving ? !selectedRowKeys?.length : false"
         @click="() => (isRemoving ? completeRemoval() : startRemoval())"
       >
@@ -36,7 +33,7 @@
         <span class="w-full">{{ t(isRemoving ? 'complete' : 'remove') }}</span>
       </AntButton>
       <AntButton
-        class="diagnosis-list__button diagnosis-list__button--cancel"
+        class="video-list__button video-list__button--cancel"
         @click="cancelRemoval"
         v-if="isRemoving"
       >
@@ -45,9 +42,9 @@
       </AntButton>
     </div>
     <AntTable
-      class="diagnosis-list__table table"
+      class="video-list__table table"
       :class="{ 'table--selectable': isSelectable }"
-      :data-source="diagnosisStore.selectedPatientDiagnosisList"
+      :data-source="videoStore.selectedPatientVideoList"
       :columns="columns"
       :scroll="{ x: true }"
       :pagination="false"
@@ -55,22 +52,32 @@
         isSelectable
           ? {
               selectedRowKeys,
-              onChange: updateSelectedRows,
+              onChange: (keys) => updateSelectedRows(keys),
             }
           : null
       "
       :custom-row="
-        (diagnosis) => {
+        (video) => {
           return {
             onClick: isSelectable
-              ? () => handleRowClickForSelect(diagnosis)
-              : null,
+              ? () => handleRowClickForSelect(video)
+              : () => handleRowClickForVideoView(video),
           };
         }
       "
       bordered
       row-class-name="table__row"
-    />
+    >
+      <template #bodyCell="{ text, column }">
+        <button type="button" v-if="column.dataIndex === 'title'">
+          <FolderOpenOutlined />
+          {{ text }}
+        </button>
+        <template v-else>
+          {{ text }}
+        </template>
+      </template>
+    </AntTable>
   </div>
 </template>
 
@@ -83,32 +90,31 @@ import {
 } from '@ant-design/icons-vue';
 import { Key } from 'ant-design-vue/es/_util/type';
 import { useToast } from 'vue-toastification';
+import { FolderOpenOutlined } from '@ant-design/icons-vue';
 
 import usePatientStore from '@/store/patient';
 import useSidenavStore from '@/store/sidenav';
-import useDiagnosisStore from '@/store/diagnosis';
+import useVideoStore from '@/store/video';
 
 import PatientSelector from '@/components/patient-selector.vue';
 import ERoutes from '@/enums/routes';
 import IServerResponse from '@/interfaces/server-response';
 import setupSidenavStore from '@/utils/setup-sidenav-store';
 import handleResponse from '@/utils/handle-response';
-import IDiagnosis from '@/interfaces/diagnosis';
-import generateColumnProcessorFunction from '@/utils/column-processor';
+import IVideo from '@/interfaces/video';
 
 definePageMeta({
-  title: 'Patient Diagnosis',
+  title: 'Videos',
   layout: 'with-sidenav',
-  alias: ERoutes.DIAGNOSIS_LIST,
+  alias: ERoutes.VIDEO_LIST,
 });
 
 const { t } = useI18n();
-const router = useRouter();
 const toast = useToast();
 
 const patientStore = usePatientStore();
 const sidenavStore = useSidenavStore();
-const diagnosisStore = useDiagnosisStore();
+const videoStore = useVideoStore();
 
 const isSelectable = ref(false);
 const isRemoving = ref(false);
@@ -116,10 +122,10 @@ const selectedRowKeys = ref<Key[]>([]);
 
 // Methods
 
-const handleRowClickForSelect = (diagnosis: IDiagnosis) => {
-  const { key } = diagnosis;
+const handleRowClickForSelect = (video: IVideo) => {
+  const { key } = video;
   if (!selectedRowKeys.value.includes(key)) {
-    updateSelectedRows([...selectedRowKeys.value, diagnosis.key]);
+    updateSelectedRows([...selectedRowKeys.value, video.key]);
   } else {
     updateSelectedRows(
       selectedRowKeys.value.filter((rowKey) => rowKey !== key)
@@ -129,6 +135,10 @@ const handleRowClickForSelect = (diagnosis: IDiagnosis) => {
 
 const updateSelectedRows = (keys: Key[]) => {
   selectedRowKeys.value = keys;
+};
+
+const handleRowClickForVideoView = (video: IVideo) => {
+  window.open(video.fileUrl, '_blank');
 };
 
 const startRemoval = () => {
@@ -146,24 +156,23 @@ const completeRemoval = async () => {
   sidenavStore.isLoading = true;
   await Promise.all(
     selectedRowKeys.value.map(async (key) => {
-      const { id, name: diagnosisName } =
-        diagnosisStore.selectedPatientDiagnosisList[key];
+      const { id, title: videoName } = videoStore.selectedPatientVideoList[key];
       await handleResponse(
-        $fetch<IServerResponse>(`/api/diagnosis/delete?diagnosisId=${id}`, {
+        $fetch<IServerResponse>(`/api/video/delete?videoId=${id}`, {
           method: 'DELETE',
         }),
         {
           success: () => {
             toast.success(
               t('remove-request.success', {
-                diagnosisName,
+                videoName,
               })
             );
           },
           error: () => {
             toast.error(
               t('remove-request.error', {
-                diagnosisName,
+                videoName,
               }),
               { timeout: 0 }
             );
@@ -175,38 +184,38 @@ const completeRemoval = async () => {
 
   sidenavStore.isLoading = false;
   cancelRemoval();
-  diagnosisStore.fetchDiagnosisOfPatient();
+  videoStore.fetchVideoOfPatient();
 };
 
 // Life Cycle Hooks
 
 onMounted(() => {
   patientStore.fetchPatients();
-  setupSidenavStore(t('diagnosis-list'), ERoutes.DIAGNOSIS_LIST);
-  if (diagnosisStore.selectedPatient?.id) {
-    diagnosisStore.fetchDiagnosisOfPatient();
+  setupSidenavStore(t('video-list'), ERoutes.VIDEO_LIST);
+  if (videoStore.selectedPatient?.id) {
+    videoStore.fetchVideoOfPatient();
   }
 });
 
 const columns = [
   {
-    dataIndex: 'name',
-    title: t('diagnosis.name'),
+    dataIndex: 'title',
+    title: t('video.title'),
     fixed: 'left',
   },
   {
-    dataIndex: 'isMedication',
-    title: t('diagnosis.is-medication'),
-    customRender: generateColumnProcessorFunction('boolean'),
+    dataIndex: 'creationDate',
+    title: t('video.creation-date'),
   },
-  { dataIndex: 'medicineName', title: t('diagnosis.medicine-name') },
-  { dataIndex: 'medicineTime', title: t('diagnosis.medicine-time') },
-  { dataIndex: 'diagnosisDate', title: t('diagnosis.diagnosis-date') },
+  {
+    dataIndex: 'savedDate',
+    title: t('video.saved-date'),
+  },
 ];
 </script>
 
 <style scoped lang="scss">
-.diagnosis-list__button {
+.video-list__button {
   @apply rounded-xl flex font-semibold text-lg py-4 px-6 items-center;
 
   &--add {
@@ -222,7 +231,7 @@ const columns = [
   }
 }
 
-.table--selectable {
+.table {
   :deep(.table__row) {
     @apply cursor-pointer;
   }
@@ -231,15 +240,15 @@ const columns = [
 
 <i18n lang="yaml">
 tr:
-  diagnosis-list: Hasta Tanıları
+  video-list: Videolar
   search: Arama
   change: Değiştir
   add: Ekle
   remove: Sil
   complete: Tamamla
   cancel: İptal
-  cannot-list-without-patient: Tanıları listelemek için Hasta seçmelisiniz.
+  cannot-list-without-patient: Videoları listelemek için Hasta seçmelisiniz.
   remove-request:
-    success: '{diagnosisName} başarıyla silindi.'
-    error: '{diagnosisName} silinirken bir hata ile karşılaşıldı.'
+    success: '{videoName} başarıyla silindi.'
+    error: '{videoName} silinirken bir hata ile karşılaşıldı.'
 </i18n>

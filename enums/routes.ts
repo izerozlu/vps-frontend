@@ -6,6 +6,8 @@ enum ERoutes {
   PATIENT_FORM = '/patient-form',
   DIAGNOSIS_LIST = '/diagnosis-list',
   DIAGNOSIS_FORM = '/diagnosis-form',
+  VIDEO_LIST = '/video-list',
+  VIDEO_FORM = '/video-form',
 }
 
 export default ERoutes;

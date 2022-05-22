@@ -58,7 +58,7 @@
           return {
             onClick: isSelectable
               ? () => handleRowClickForSelect(patient)
-              : () => navigateToPatientForm('update', patient.id),
+              : () => navigateToPatientForm(patient.id),
           };
         }
       "
@@ -146,8 +146,15 @@ const handleRowClickForSelect = (patient: IPatient) => {
   }
 };
 
-const navigateToPatientForm = (type: 'add' | 'update', patientId?: number) => {
-  router.push({ path: ERoutes.PATIENT_FORM, query: { type, patientId } });
+const updateSelectedRows = (keys: Key[]) => {
+  selectedRowKeys.value = keys;
+};
+
+const navigateToPatientForm = (patientId?: number) => {
+  router.push({
+    path: ERoutes.PATIENT_FORM,
+    query: { type: 'update', patientId },
+  });
 };
 
 const startRemoval = () => {
@@ -159,10 +166,6 @@ const cancelRemoval = () => {
   isRemoving.value = false;
   isSelectable.value = false;
   selectedRowKeys.value = [];
-};
-
-const updateSelectedRows = (keys: Key[]) => {
-  selectedRowKeys.value = keys;
 };
 
 const completeRemoval = async () => {

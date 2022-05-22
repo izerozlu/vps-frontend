@@ -15,7 +15,10 @@
             {{ t('cannot-submit-without-patient') }}
           </span>
         </template>
-        <PatientSelector />
+        <PatientSelector
+          :set-selected-patient="diagnosisStore.setSelectedPatient"
+          :selected-patient-id="diagnosisStore.selectedPatient?.id"
+        />
       </AntTooltip>
     </div>
     <div class="diagnosis-form__field">

@@ -81,5 +81,11 @@
         "medicine-name": "İlaç Adı",
         "medicine-time": "İlaç Zamanı",
         "diagnosis-date": "Tanı Tarihi"
+    },
+    "video": {
+        "title": "Başlık",
+        "saved-date": "Kaydedilme Tarihi",
+        "creation-date": "Oluşturulma Tarihi",
+        "video": "Video"
     }
 }

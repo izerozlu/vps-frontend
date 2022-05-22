@@ -72,6 +72,9 @@ const useDiagnosisStore = defineStore('diagnosis', {
         []
       );
     },
+    selectedPatientDiagnosisList(): IDiagnosis[] {
+      return this.diagnosisPatientMap[this.selectedPatient.id] || [];
+    },
   },
 });
 

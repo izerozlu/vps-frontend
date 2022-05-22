@@ -3,8 +3,8 @@
     id="patient"
     class="diagnosis-list__patient w-[240px]"
     :placeholder="t('select-patient')"
-    :value="diagnosisStore.selectedPatient?.id"
-    @select="diagnosisStore.setSelectedPatient"
+    :value="selectedPatientId"
+    @select="setSelectedPatient"
   >
     <AntSelectOption :value="patient.id" v-for="patient in patientStore.list">
       {{ patient.name }} {{ patient.lastName }}
@@ -20,8 +20,12 @@ import usePatientStore from '@/store/patient';
 
 const { t } = useI18n();
 
-const diagnosisStore = useDiagnosisStore();
 const patientStore = usePatientStore();
+
+const props = defineProps<{
+  setSelectedPatient: (patientId: number) => void;
+  selectedPatientId: number | string;
+}>();
 </script>
 
 <i18n lang="yaml">

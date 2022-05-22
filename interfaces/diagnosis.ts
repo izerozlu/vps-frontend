@@ -1,4 +1,4 @@
-import IPatient from './patient';
+import IPatient from '@/interfaces/patient';
 
 interface IDiagnosis {
   id: number;
