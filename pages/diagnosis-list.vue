@@ -5,14 +5,14 @@
   >
     <div class="flex mb-6 diagnosis-list__search-and-actions items-center">
       <PatientSelector />
-      <AntButton
+      <NuxtLink
         class="diagnosis-list__button diagnosis-list__button--add ml-auto"
         v-if="!isRemoving"
-        @click="navigateToDiagnosisForm()"
+        :to="ERoutes.DIAGNOSIS_FORM"
       >
-        <PlusCircleOutlined />
+        <PlusCircleOutlined class="mr-2" />
         <span class="w-full">{{ t('add') }}</span>
-      </AntButton>
+      </NuxtLink>
       <AntButton
         class="diagnosis-list__button diagnosis-list__button--remove"
         :class="{ 'diagnosis-list__button--complete mr-4 ml-auto': isRemoving }"

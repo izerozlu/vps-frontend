@@ -13,14 +13,14 @@
           <SearchOutlined />
         </template>
       </AntInput>
-      <AntButton
+      <NuxtLink
         class="patient-list__button patient-list__button--add"
-        @click="navigateToPatientForm('add')"
+        :to="`${ERoutes.PATIENT_FORM}?type=add`"
         v-if="!isRemoving"
       >
-        <PlusCircleOutlined />
+        <PlusCircleOutlined class="mr-2" />
         <span class="w-full">{{ t('add') }}</span>
-      </AntButton>
+      </NuxtLink>
       <AntButton
         class="patient-list__button patient-list__button--remove"
         :class="{ 'patient-list__button--complete mr-4': isRemoving }"
