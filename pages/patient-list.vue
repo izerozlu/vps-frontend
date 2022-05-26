@@ -43,7 +43,7 @@
       class="patient-list__patient-table patient-table"
       :data-source="filteredPatients"
       :columns="columns"
-      :scroll="{ x: true }"
+      :scroll="{ x: 'calc(150vw)', y: sidenavStore.tableBodyHeight }"
       :pagination="false"
       :row-selection="
         isSelectable
@@ -63,8 +63,20 @@
         }
       "
       bordered
+      table-layout="ellipsis"
       row-class-name="patient-table__row"
-    />
+    >
+      <template #headerCell="{ title }">
+        <AntTooltip placement="topLeft" :mouse-enter-delay="0.4">
+          <template #title>
+            <span class="block text-center">
+              {{ title }}
+            </span>
+          </template>
+          {{ title }}
+        </AntTooltip>
+      </template>
+    </AntTable>
   </div>
 </template>
 
@@ -305,11 +317,7 @@ const columns = [
     customRender: generateColumnProcessorFunction('parenting-attitude'),
   },
   { dataIndex: 'savedDate', title: t('patient.saved-date') },
-  {
-    dataIndex: 'previousDiagnosis',
-    title: t('patient.previous-diagnosis'),
-  },
-];
+].map((column) => ({ ...column, ellipsis: true }));
 </script>
 
 <style scoped lang="scss">

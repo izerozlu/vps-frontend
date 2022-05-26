@@ -42,11 +42,11 @@
       </AntButton>
     </div>
     <AntTable
-      class="video-list__table table"
+      class="video-list__table"
       :class="{ 'table--selectable': isSelectable }"
       :data-source="videoStore.selectedPatientVideoList"
       :columns="columns"
-      :scroll="{ x: true }"
+      :scroll="{ x: true, y: sidenavStore.tableBodyHeight }"
       :pagination="false"
       :row-selection="
         isSelectable

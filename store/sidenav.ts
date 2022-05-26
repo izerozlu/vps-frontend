@@ -10,6 +10,7 @@ const useSidenavStore = defineStore('sidenav', {
       pageTitle: '',
       isLoading: false,
       routesToActivateAdminItem: [] as ERoutes[],
+      tableBodyHeight: '',
     };
   },
 });

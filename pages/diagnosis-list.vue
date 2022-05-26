@@ -46,7 +46,7 @@
       :class="{ 'table--selectable': isSelectable }"
       :data-source="diagnosisStore.selectedPatientDiagnosisList"
       :columns="columns"
-      :scroll="{ x: true }"
+      :scroll="{ x: true, y: sidenavStore.tableBodyHeight }"
       :pagination="false"
       :row-selection="
         isSelectable

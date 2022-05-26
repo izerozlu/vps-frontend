@@ -38,12 +38,13 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-// TODO if ever there's a new locale gets introduced, it has to be handled for AntDesign components too
+// TODO [ozlui] if ever there's a new locale gets introduced, it has to be handled for AntDesign components too
 import trLocale from 'ant-design-vue/es/locale/tr_TR';
 
 import useSidenavStore from '@/store/sidenav';
 import useAuthenticationStore from '@/store/authentication';
 import ERoutes from '@/enums/routes';
+import { throttle } from '@antfu/utils';
 
 const sidenavStore = useSidenavStore();
 const authenticationStore = useAuthenticationStore();
@@ -60,10 +61,35 @@ const logout = async () => {
   }
 };
 
-onMounted(() => {
+const calculateTableHeight = (): string => {
+  const antTableBody: HTMLElement = document.querySelector('.ant-table-body');
+  if (antTableBody) {
+    const distanceToAntTableBody = antTableBody.getBoundingClientRect().y;
+    const pageBottomPadding = 16;
+    return `calc(100vh - ${distanceToAntTableBody + pageBottomPadding}px)`;
+  } else {
+    return '500px';
+  }
+};
+
+const setTableHeight = throttle(100, () => {
+  sidenavStore.tableBodyHeight = calculateTableHeight();
+});
+
+// Life Cycle Hooks
+
+onMounted(async () => {
   router.afterEach(() => {
     sidenavStore.isLoading = false;
   });
+
+  window.addEventListener('resize', setTableHeight);
+  await nextTick();
+  setTableHeight();
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', setTableHeight);
 });
 </script>
 
