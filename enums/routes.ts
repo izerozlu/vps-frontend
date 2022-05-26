@@ -8,6 +8,8 @@ enum ERoutes {
   DIAGNOSIS_FORM = '/diagnosis-form',
   VIDEO_LIST = '/video-list',
   VIDEO_FORM = '/video-form',
+  TAG_LIST = '/tag-list',
+  TAG_FORM = '/tag-form',
 }
 
 export default ERoutes;

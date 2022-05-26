@@ -1,6 +1,5 @@
 <template>
   <AntSelect
-    id="patient"
     class="patient-selector w-[240px]"
     :placeholder="t('select-patient')"
     :value="patientStore.selectedPatient?.id"

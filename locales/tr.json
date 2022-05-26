@@ -9,6 +9,9 @@
         },
         "video": {
             "save": "Video kaydedilirken bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz."
+        },
+        "tag": {
+            "fetch": "Sunucudan Etiket getirirken bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz."
         }
     },
     "patient": {
@@ -90,5 +93,10 @@
         "saved-date": "Kaydedilme Tarihi",
         "creation-date": "Oluşturulma Tarihi",
         "video": "Video"
+    },
+    "tag": {
+        "tag": "Etiket",
+        "start-time": "Başlangıç Zamanı",
+        "end-time": "Bitiş Zamanı"
     }
 }

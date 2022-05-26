@@ -33,10 +33,10 @@
           {{ t('patient-videos') }}
           <RightArrowSvg class="action__arrow" />
         </NuxtLink>
-        <button class="admin-board__action group" type="button">
+        <NuxtLink class="admin-board__action group" :to="ERoutes.TAG_LIST">
           {{ t('video-tags') }}
           <RightArrowSvg class="action__arrow" />
-        </button>
+        </NuxtLink>
       </div>
     </div>
   </div>

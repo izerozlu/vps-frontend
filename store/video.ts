@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { useToast } from 'vue-toastification';
 
-import IDiagnosis from '@/interfaces/diagnosis';
 import IPatient from '@/interfaces/patient';
 import handleResponse from '@/utils/handle-response';
 import useSidenavStore from '@/store/sidenav';
@@ -14,9 +13,21 @@ const useVideoStore = defineStore('video', {
     return {
       videoPatientMap: {} as { [patientId: IPatient['id']]: IVideo[] },
       form: {} as IVideo,
+      selectedVideo: {} as IVideo,
     };
   },
   actions: {
+    setSelectedVideo(videoId: number) {
+      if (videoId === -1) {
+        this.selectedVideo = null;
+      } else {
+        const video = this.selectedPatientVideoList.find(
+          (video) => video.id === videoId
+        );
+
+        this.selectedVideo = video || null;
+      }
+    },
     setVideo(video: IVideo) {
       const patientId = video.patient.id;
       this.videoPatientMap[patientId] = video;

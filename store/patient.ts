@@ -1,8 +1,11 @@
 import { defineStore } from 'pinia';
 
+import useVideoStore from '@/store/video';
+import useSidenavStore from '@/store/sidenav';
+
 import IPatient from '@/interfaces/patient';
 import IServerResponse from '@/interfaces/server-response';
-import useSidenavStore from '@/store/sidenav';
+
 import handleResponse from '@/utils/handle-response';
 
 const usePatientStore = defineStore('patient', {
@@ -19,9 +22,11 @@ const usePatientStore = defineStore('patient', {
       this.form = {};
     },
     setSelectedPatient(patientId: number) {
+      const videoStore = useVideoStore();
       const patient = this.list.find((patient) => patient.id === patientId);
 
       this.selectedPatient = patient || null;
+      videoStore.setSelectedVideo(-1);
     },
     async fetchPatients() {
       const sidenavStore = useSidenavStore();
