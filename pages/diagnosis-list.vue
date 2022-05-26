@@ -5,7 +5,7 @@
   >
     <div class="flex mb-6 diagnosis-list__search-and-actions items-center h-16">
       <AntTooltip
-        :visible="!diagnosisStore.selectedPatient?.id"
+        :visible="!patientStore.selectedPatient?.id"
         placement="right"
       >
         <template #title>
@@ -13,10 +13,7 @@
             {{ t('cannot-list-without-patient') }}
           </span>
         </template>
-        <PatientSelector
-          :set-selected-patient="diagnosisStore.setSelectedPatient"
-          :selected-patient-id="diagnosisStore.selectedPatient?.id"
-        />
+        <PatientSelector @patient-select="diagnosisStore.setSelectedPatient" />
       </AntTooltip>
       <NuxtLink
         class="diagnosis-list__button diagnosis-list__button--add ml-auto"
@@ -103,7 +100,6 @@ definePageMeta({
 });
 
 const { t } = useI18n();
-const router = useRouter();
 const toast = useToast();
 
 const patientStore = usePatientStore();
@@ -183,7 +179,7 @@ const completeRemoval = async () => {
 onMounted(() => {
   patientStore.fetchPatients();
   setupSidenavStore(t('diagnosis-list'), ERoutes.DIAGNOSIS_LIST);
-  if (diagnosisStore.selectedPatient?.id) {
+  if (patientStore.selectedPatient?.id) {
     diagnosisStore.fetchDiagnosisOfPatient();
   }
 });

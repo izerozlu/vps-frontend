@@ -10,6 +10,7 @@ import {
   SelectOption,
   Tooltip,
   Upload,
+  TimePicker,
 } from 'ant-design-vue/lib';
 
 export default defineNuxtPlugin(({ vueApp: app }) => {
@@ -23,4 +24,5 @@ export default defineNuxtPlugin(({ vueApp: app }) => {
   app.component('AntTable', Table);
   app.component('AntTooltip', Tooltip);
   app.component('AntUpload', Upload);
+  app.component('AntTimePicker', TimePicker);
 });

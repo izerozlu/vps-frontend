@@ -17,6 +17,11 @@ const useVideoStore = defineStore('video', {
     };
   },
   actions: {
+    setSelectedPatient(patientId: number) {
+      const patientStore = usePatientStore();
+      patientStore.setSelectedPatient(patientId);
+      this.fetchVideoOfPatient();
+    },
     setSelectedVideo(videoId: number) {
       if (videoId === -1) {
         this.selectedVideo = null;

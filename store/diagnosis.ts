@@ -13,18 +13,13 @@ const useDiagnosisStore = defineStore('diagnosis', {
     return {
       diagnosisPatientMap: {} as { [patientId: IPatient['id']]: IDiagnosis[] },
       form: {} as IDiagnosis,
-      selectedPatient: {} as IPatient,
     };
   },
   actions: {
     setSelectedPatient(patientId: number) {
       const patientStore = usePatientStore();
-      const patient = patientStore.list.find(
-        (patient) => patient.id === patientId
-      );
-
-      this.selectedPatient = patient || null;
-      this.fetchDiagnosisOfPatient(patientId);
+      patientStore.setSelectedPatient(patientId);
+      this.fetchDiagnosisOfPatient();
     },
     setDiagnosis(diagnosis: IDiagnosis) {
       const patientId = diagnosis.patient.id;
@@ -32,11 +27,12 @@ const useDiagnosisStore = defineStore('diagnosis', {
     },
     async fetchDiagnosisOfPatient(patientId?: IPatient['id']) {
       const sidenavStore = useSidenavStore();
+      const patientStore = usePatientStore();
       const toast = useToast();
       const { t } = i18n.global;
 
       if (!patientId) {
-        patientId = this.selectedPatient?.id;
+        patientId = patientStore.selectedPatient?.id;
       }
 
       sidenavStore.isLoading = true;
@@ -73,7 +69,8 @@ const useDiagnosisStore = defineStore('diagnosis', {
       );
     },
     selectedPatientDiagnosisList(): IDiagnosis[] {
-      return this.diagnosisPatientMap[this.selectedPatient.id] || [];
+      const patientStore = usePatientStore();
+      return this.diagnosisPatientMap[patientStore.selectedPatient.id] || [];
     },
   },
 });

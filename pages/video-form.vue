@@ -15,10 +15,7 @@
             {{ t('cannot-submit-without-patient') }}
           </span>
         </template>
-        <PatientSelector
-          :set-selected-patient="patientStore.setSelectedPatient"
-          :selected-patient-id="patientStore.selectedPatient?.id"
-        />
+        <PatientSelector @patient-select="videoStore.setSelectedPatient" />
       </AntTooltip>
     </div>
     <div class="video-form__field">
@@ -33,7 +30,7 @@
     </div>
     <div class="video-form__field">
       <label class="mr-16 video-form__label" for="saved-date">
-        {{ t('patient.saved-date') }}:
+        {{ t('video.saved-date') }}:
       </label>
       <AntDatePicker
         class="video-form__input"
@@ -181,7 +178,7 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  diagnosisStore.resetForm();
+  videoStore.resetForm();
 });
 </script>
 

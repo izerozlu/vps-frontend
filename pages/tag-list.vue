@@ -10,7 +10,10 @@
             {{ t('cannot-list-without-patient.tag') }}
           </span>
         </template>
-        <PatientSelector class="!mr-4" @patient-select="setSelectedPatient" />
+        <PatientSelector
+          class="!mr-4"
+          @patient-select="tagStore.setSelectedPatient"
+        />
       </AntTooltip>
       <AntTooltip
         :visible="
@@ -29,12 +32,12 @@
         </template>
         <VideoSelector
           :disabled="!patientStore.selectedPatient?.id"
-          @video-select="setSelectedVideo"
+          @video-select="tagStore.setSelectedVideo"
         />
       </AntTooltip>
       <NuxtLink
         class="tag-list__button tag-list__button--add ml-auto"
-        :to="ERoutes.VIDEO_FORM"
+        :to="ERoutes.TAG_FORM"
         v-if="!isRemoving"
       >
         <PlusCircleOutlined class="mr-2" />
@@ -141,16 +144,6 @@ const selectedRowKeys = ref<Key[]>([]);
 
 // Methods
 
-const setSelectedPatient = (patientId: number) => {
-  patientStore.setSelectedPatient(patientId);
-  videoStore.fetchVideoOfPatient();
-};
-
-const setSelectedVideo = (videoId: number) => {
-  videoStore.setSelectedVideo(videoId);
-  tagStore.fetchTagOfVideo();
-};
-
 const handleRowClickForSelect = (video: IVideo) => {
   const { key } = video;
   if (!selectedRowKeys.value.includes(key)) {
@@ -217,14 +210,15 @@ const completeRemoval = async () => {
 
 // Life Cycle Hooks
 
-onMounted(() => {
-  patientStore.fetchPatients();
-  setupSidenavStore(t('tag-list'), ERoutes.VIDEO_LIST);
-  if (tagStore.selectedPatient?.id) {
-    videoStore.fetchVideoOfPatient(tagStore.selectedPatient.id);
+onMounted(async () => {
+  setupSidenavStore(t('tag-list'), ERoutes.TAG_LIST);
+  await patientStore.fetchPatients();
+
+  if (patientStore.selectedPatient?.id) {
+    await videoStore.fetchVideoOfPatient(tagStore.selectedPatient.id);
   }
 
-  if (tagStore.selectedVideo?.id) {
+  if (videoStore.selectedVideo?.id) {
     tagStore.fetchTagOfVideo();
   }
 });
@@ -272,7 +266,7 @@ const columns = [
 
 <i18n lang="yaml">
 tr:
-  tag-list: Videolar
+  tag-list: Etiketler
   search: Arama
   change: Değiştir
   add: Ekle

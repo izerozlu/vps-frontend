@@ -7,7 +7,7 @@
     <!-- TODO [ozlui] add required field validation -->
     <div class="diagnosis-form__field h-16 flex items-center">
       <AntTooltip
-        :visible="!diagnosisStore.selectedPatient?.id"
+        :visible="!patientStore.selectedPatient?.id"
         placement="right"
       >
         <template #title>
@@ -15,10 +15,7 @@
             {{ t('cannot-submit-without-patient') }}
           </span>
         </template>
-        <PatientSelector
-          :set-selected-patient="diagnosisStore.setSelectedPatient"
-          :selected-patient-id="diagnosisStore.selectedPatient?.id"
-        />
+        <PatientSelector @patient-select="diagnosisStore.setSelectedPatient" />
       </AntTooltip>
     </div>
     <div class="diagnosis-form__field">
@@ -43,7 +40,7 @@
     </div>
     <div class="diagnosis-form__field">
       <label class="mr-16 diagnosis-form__label" for="medicine-time">
-        {{ t('patient.medicine-time') }}:
+        {{ t('diagnosis.medicine-time') }}:
       </label>
       <AntInput
         id="medicine-time"
@@ -78,7 +75,7 @@
     <AntTooltip
       class="diagnosis-form__submit-button-wrapper"
       placement="left"
-      :visible="!diagnosisStore.selectedPatient?.id"
+      :visible="!patientStore.selectedPatient?.id"
     >
       <template #title>
         <span class="text-center block">
@@ -88,7 +85,7 @@
       <AntButton
         class="diagnosis-form__submit-button"
         :class="{ 'diagnosis-form__submit-button--fetching': isFetching }"
-        :disabled="isFetching || !diagnosisStore.selectedPatient?.id"
+        :disabled="isFetching || !patientStore.selectedPatient?.id"
         @click="submitForm"
       >
         <CheckCircleOutlined v-if="!isFetching" />
@@ -147,7 +144,7 @@ const submitForm = async () => {
   sidenavStore.isLoading = true;
   isFetching.value = true;
 
-  diagnosisStore.form.patient = { id: diagnosisStore.selectedPatient.id };
+  diagnosisStore.form.patient = { id: patientStore.selectedPatient.id };
 
   await handleResponse(
     $fetch<IServerResponse>('/api/diagnosis/save', {

@@ -9,6 +9,7 @@ import IPatient from '@/interfaces/patient';
 import handleResponse from '@/utils/handle-response';
 import IVideo from '@/interfaces/video';
 import ITag from '@/interfaces/tag';
+import usePatientStore from './patient';
 
 const useTagStore = defineStore('tag', {
   state: () => {
@@ -20,6 +21,15 @@ const useTagStore = defineStore('tag', {
     };
   },
   actions: {
+    setSelectedPatient(patientId: number) {
+      const videoStore = useVideoStore();
+      videoStore.setSelectedPatient(patientId);
+    },
+    setSelectedVideo(videoId: number) {
+      const videoStore = useVideoStore();
+      videoStore.setSelectedVideo(videoId);
+      this.fetchTagOfVideo();
+    },
     async fetchTagOfVideo(videoId?: IVideo['id']) {
       const sidenavStore = useSidenavStore();
       const videoStore = useVideoStore();

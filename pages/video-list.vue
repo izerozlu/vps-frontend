@@ -13,7 +13,7 @@
             {{ t('cannot-list-without-patient') }}
           </span>
         </template>
-        <PatientSelector @patient-select="setSelectedPatient" />
+        <PatientSelector @patient-select="videoStore.setSelectedPatient" />
       </AntTooltip>
       <NuxtLink
         class="video-list__button video-list__button--add ml-auto"
@@ -119,11 +119,6 @@ const videoStore = useVideoStore();
 const isSelectable = ref(false);
 const isRemoving = ref(false);
 const selectedRowKeys = ref<Key[]>([]);
-
-const setSelectedPatient = (patientId: number) => {
-  patientStore.setSelectedPatient(patientId);
-  videoStore.fetchVideoOfPatient();
-};
 
 const handleRowClickForSelect = (video: IVideo) => {
   const { key } = video;
