@@ -11,11 +11,17 @@ const usePatientStore = defineStore('patient', {
       list: [] as IPatient[],
       form: {} as IPatient,
       query: '',
+      selectedPatient: {} as IPatient,
     };
   },
   actions: {
     resetForm() {
       this.form = {};
+    },
+    setSelectedPatient(patientId: number) {
+      const patient = this.list.find((patient) => patient.id === patientId);
+
+      this.selectedPatient = patient || null;
     },
     async fetchPatients() {
       const sidenavStore = useSidenavStore();

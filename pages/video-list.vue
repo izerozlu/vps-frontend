@@ -4,15 +4,17 @@
     :class="{ 'pointer-events-none opacity-70': sidenavStore.isLoading }"
   >
     <div class="flex mb-6 video-list__search-and-actions items-center h-16">
-      <AntTooltip :visible="!videoStore.selectedPatient?.id" placement="right">
+      <AntTooltip
+        :visible="!patientStore.selectedPatient?.id"
+        placement="right"
+      >
         <template #title>
           <span class="block text-center">
             {{ t('cannot-list-without-patient') }}
           </span>
         </template>
         <PatientSelector
-          :set-selected-patient="videoStore.setSelectedPatient"
-          :selected-patient-id="videoStore.selectedPatient?.id"
+          @patient-select="(patientId) => setSelectedPatient(patientId)"
         />
       </AntTooltip>
       <NuxtLink
@@ -120,7 +122,10 @@ const isSelectable = ref(false);
 const isRemoving = ref(false);
 const selectedRowKeys = ref<Key[]>([]);
 
-// Methods
+const setSelectedPatient = (patientId: number) => {
+  patientStore.setSelectedPatient(patientId);
+  videoStore.fetchVideoOfPatient();
+};
 
 const handleRowClickForSelect = (video: IVideo) => {
   const { key } = video;
@@ -192,7 +197,7 @@ const completeRemoval = async () => {
 onMounted(() => {
   patientStore.fetchPatients();
   setupSidenavStore(t('video-list'), ERoutes.VIDEO_LIST);
-  if (videoStore.selectedPatient?.id) {
+  if (patientStore.selectedPatient?.id) {
     videoStore.fetchVideoOfPatient();
   }
 });

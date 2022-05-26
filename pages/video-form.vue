@@ -6,15 +6,18 @@
   >
     <!-- TODO [ozlui] add required field validation -->
     <div class="video-form__field h-16 flex items-center">
-      <AntTooltip :visible="!videoStore.selectedPatient?.id" placement="right">
+      <AntTooltip
+        :visible="!patientStore.selectedPatient?.id"
+        placement="right"
+      >
         <template #title>
           <span class="block text-center">
             {{ t('cannot-submit-without-patient') }}
           </span>
         </template>
         <PatientSelector
-          :set-selected-patient="videoStore.setSelectedPatient"
-          :selected-patient-id="videoStore.selectedPatient?.id"
+          :set-selected-patient="patientStore.setSelectedPatient"
+          :selected-patient-id="patientStore.selectedPatient?.id"
         />
       </AntTooltip>
     </div>
@@ -55,7 +58,7 @@
     <AntTooltip
       class="video-form__submit-button-wrapper"
       placement="left"
-      :visible="!videoStore.selectedPatient?.id"
+      :visible="!patientStore.selectedPatient?.id"
     >
       <template #title>
         <span class="text-center block">
@@ -65,7 +68,7 @@
       <AntButton
         class="video-form__submit-button"
         :class="{ 'video-form__submit-button--fetching': isFetching }"
-        :disabled="isFetching || !videoStore.selectedPatient?.id"
+        :disabled="isFetching || !patientStore.selectedPatient?.id"
         @click="submitForm"
       >
         <CheckCircleOutlined v-if="!isFetching" />
@@ -134,7 +137,7 @@ const submitForm = async () => {
 
   const data = {
     title: videoStore.form.title,
-    patient: { id: videoStore.selectedPatient.id },
+    patient: { id: patientStore.selectedPatient.id },
     savedDate: videoStore.form.savedDate,
   };
   const file = videoStore.form.rawFile;

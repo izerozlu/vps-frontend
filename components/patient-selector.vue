@@ -1,10 +1,10 @@
 <template>
   <AntSelect
     id="patient"
-    class="diagnosis-list__patient w-[240px]"
+    class="patient-selector w-[240px]"
     :placeholder="t('select-patient')"
-    :value="selectedPatientId"
-    @select="setSelectedPatient"
+    :value="patientStore.selectedPatient?.id"
+    @select="(patientId) => emit('patient-select', patientId)"
   >
     <AntSelectOption :value="patient.id" v-for="patient in patientStore.list">
       {{ patient.name }} {{ patient.lastName }}
@@ -15,17 +15,13 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 
-import useDiagnosisStore from '@/store/diagnosis';
 import usePatientStore from '@/store/patient';
 
 const { t } = useI18n();
 
 const patientStore = usePatientStore();
 
-const props = defineProps<{
-  setSelectedPatient: (patientId: number) => void;
-  selectedPatientId: number | string;
-}>();
+const emit = defineEmits<{ (e: 'patient-select', patientId: number): void }>();
 </script>
 
 <i18n lang="yaml">

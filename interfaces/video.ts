@@ -1,4 +1,5 @@
 interface IVideo {
+  id?: number;
   title: string;
   patient: { id: number };
   savedDate: string;
