@@ -13,7 +13,7 @@ const useVideoStore = defineStore('video', {
   state: () => {
     return {
       videoPatientMap: {} as { [patientId: IPatient['id']]: IVideo[] },
-      form: {} as IDiagnosis,
+      form: {} as IVideo,
       selectedPatient: {} as IPatient,
     };
   },

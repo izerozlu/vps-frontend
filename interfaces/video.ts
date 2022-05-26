@@ -4,6 +4,7 @@ interface IVideo {
   savedDate: string;
   fileUrl: string;
   key?: number;
+  rawFile?: File;
 }
 
 export default IVideo;

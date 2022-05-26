@@ -15,9 +15,9 @@
           :selected-patient-id="videoStore.selectedPatient?.id"
         />
       </AntTooltip>
-      <!-- TODO [ozlui] add functionality -->
       <NuxtLink
         class="video-list__button video-list__button--add ml-auto"
+        :to="ERoutes.VIDEO_FORM"
         v-if="!isRemoving"
       >
         <PlusCircleOutlined class="mr-2" />

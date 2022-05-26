@@ -6,6 +6,9 @@
         "unknown": "Sunucu tarafında bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz.",
         "diagnosis": {
             "fetch": "Sunucudan Tanı getirirken bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz."
+        },
+        "video": {
+            "save": "Video kaydedilirken bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz."
         }
     },
     "patient": {

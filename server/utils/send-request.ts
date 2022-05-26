@@ -1,14 +1,15 @@
 const sendRequest = async (
   path: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' = 'GET',
-  body?: any
+  body?: any,
+  contentType: string = 'application/json'
 ) => {
   let result: any;
   let response: Response;
 
   try {
     response = await fetch(`http://localhost:8090${path}`, {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': contentType },
       method,
       body,
     });

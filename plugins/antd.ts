@@ -9,6 +9,7 @@ import {
   Table,
   SelectOption,
   Tooltip,
+  Upload,
 } from 'ant-design-vue/lib';
 
 export default defineNuxtPlugin(({ vueApp: app }) => {
@@ -21,4 +22,5 @@ export default defineNuxtPlugin(({ vueApp: app }) => {
   app.component('AntButton', Button);
   app.component('AntTable', Table);
   app.component('AntTooltip', Tooltip);
+  app.component('AntUpload', Upload);
 });

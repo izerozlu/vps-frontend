@@ -59,6 +59,12 @@ const logout = async () => {
     router.replace(ERoutes.AUTHENTICATION);
   }
 };
+
+onMounted(() => {
+  router.afterEach(() => {
+    sidenavStore.isLoading = false;
+  });
+});
 </script>
 
 <style lang="scss" scoped>
