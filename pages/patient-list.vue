@@ -127,10 +127,11 @@ const filteredPatients = computed(() => {
 
   return (
     query
-      ? patientStore.list.filter(({ name, lastName }) => {
+      ? patientStore.list.filter(({ name, lastName, tckn }) => {
           return (
             name.toLowerCase().includes(query) ||
-            lastName.toLowerCase().includes(query)
+            lastName.toLowerCase().includes(query) ||
+            tckn.toLowerCase().includes(query)
           );
         })
       : patientStore.list
