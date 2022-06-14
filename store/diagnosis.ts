@@ -72,6 +72,16 @@ const useDiagnosisStore = defineStore('diagnosis', {
       const patientStore = usePatientStore();
       return this.diagnosisPatientMap[patientStore.selectedPatient.id] || [];
     },
+    formForUpdate(): Partial<IDiagnosis> {
+      return {
+        name: this.form.name,
+        isMedication: this.form.isMedication,
+        medicineName: this.form.medicineName,
+        medicineTime: this.form.medicineTime,
+        diagnosisDate: this.form.diagnosisDate,
+        patient: this.form.patient,
+      };
+    },
   },
 });
 

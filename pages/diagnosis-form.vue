@@ -109,6 +109,7 @@ import IServerResponse from '@/interfaces/server-response';
 import setupSidenavStore from '@/utils/setup-sidenav-store';
 import handleResponse from '@/utils/handle-response';
 import useDiagnosisStore from '@/store/diagnosis';
+import IDiagnosis from '~~/interfaces/diagnosis';
 
 definePageMeta({
   title: 'Diagnosis Form',
@@ -118,6 +119,7 @@ definePageMeta({
 
 const { t } = useI18n();
 const router = useRouter();
+const route = useRoute();
 
 const diagnosisStore = useDiagnosisStore();
 const patientStore = usePatientStore();
@@ -141,23 +143,43 @@ const diagnosisDate = computed({
 // Methods
 
 const submitForm = async () => {
+  const { type } = route.query;
   sidenavStore.isLoading = true;
   isFetching.value = true;
 
   diagnosisStore.form.patient = { id: patientStore.selectedPatient.id };
 
-  await handleResponse(
-    $fetch<IServerResponse>('/api/diagnosis/save', {
-      body: diagnosisStore.form,
-      method: 'POST',
-    }),
-    {
-      success: () => {
-        diagnosisStore.resetForm();
-        router.push(ERoutes.DIAGNOSIS_LIST);
-      },
-    }
-  );
+  if (type === 'update') {
+    await handleResponse(
+      $fetch<IServerResponse>('/api/diagnosis/update', {
+        body: diagnosisStore.formForUpdate,
+        method: 'PATCH',
+        params: {
+          id: diagnosisStore.form.id,
+        },
+      }),
+      {
+        success: () => {
+          diagnosisStore.resetForm();
+          router.push(ERoutes.DIAGNOSIS_LIST);
+        },
+      }
+    );
+  } else {
+    await handleResponse(
+      $fetch<IServerResponse>('/api/diagnosis/save', {
+        body: diagnosisStore.form,
+        method: 'POST',
+      }),
+      {
+        success: () => {
+          diagnosisStore.resetForm();
+          router.push(ERoutes.DIAGNOSIS_LIST);
+        },
+      }
+    );
+  }
+
   isFetching.value = false;
   sidenavStore.isLoading = false;
 };
@@ -165,9 +187,28 @@ const submitForm = async () => {
 // Life Cycle Hooks
 
 onMounted(async () => {
+  const { type, diagnosisId } = route.query;
+
   setupSidenavStore(t('diagnosis-form'), ERoutes.DIAGNOSIS_FORM);
   diagnosisStore.resetForm();
-  patientStore.fetchPatients();
+  await patientStore.fetchPatients();
+
+  if (type === 'update' && diagnosisId) {
+    const selectedPatientId = patientStore.selectedPatient?.id;
+
+    if (selectedPatientId) {
+      diagnosisStore.form =
+        diagnosisStore.diagnosisPatientMap[selectedPatientId].find(
+          (diagnosis) => diagnosis.id === parseInt(diagnosisId.toString())
+        ) || ({} as IDiagnosis);
+
+      sidenavStore.pageTitle += ` | ${diagnosisStore.form.name}`;
+    }
+
+    if (!diagnosisStore.form.id) {
+      router.push(ERoutes.DIAGNOSIS_LIST);
+    }
+  }
 });
 
 onUnmounted(() => {

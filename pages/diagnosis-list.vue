@@ -61,7 +61,7 @@
           return {
             onClick: isSelectable
               ? () => handleRowClickForSelect(diagnosis)
-              : null,
+              : () => navigateToDiagnosisForm(diagnosis.id),
           };
         }
       "
@@ -101,6 +101,7 @@ definePageMeta({
 
 const { t } = useI18n();
 const toast = useToast();
+const router = useRouter();
 
 const patientStore = usePatientStore();
 const sidenavStore = useSidenavStore();
@@ -121,6 +122,13 @@ const handleRowClickForSelect = (diagnosis: IDiagnosis) => {
       selectedRowKeys.value.filter((rowKey) => rowKey !== key)
     );
   }
+};
+
+const navigateToDiagnosisForm = (diagnosisId?: number) => {
+  router.push({
+    path: ERoutes.DIAGNOSIS_FORM,
+    query: { type: 'update', diagnosisId },
+  });
 };
 
 const updateSelectedRows = (keys: Key[]) => {
@@ -215,6 +223,12 @@ const columns = [
 
   :deep(.anticon) {
     @apply text-[20px] !important;
+  }
+}
+
+.table {
+  :deep(.table__row) {
+    @apply cursor-pointer;
   }
 }
 
