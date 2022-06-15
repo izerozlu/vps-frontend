@@ -1,23 +1,18 @@
-# Nuxt 3 Minimal Starter
+# vps-frontend
 
-Look at the [nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
+Frontend application for the **VPS** application.
 
 ## Setup
 
-Make sure to install the dependencies:
+> You will need NodeJS >v14.19.1 to run the application
+
+Install dependencies
 
 ```bash
-# yarn
-yarn install
-
-# npm
 npm install
-
-# pnpm
-pnpm install --shamefully-hoist
 ```
 
-## Development Server
+## Run development server locally
 
 Start the development server on http://localhost:3000
 
@@ -33,10 +28,23 @@ Build the application for production:
 npm run build
 ```
 
-Locally preview production build:
+## Create docker image and container
+
+To dockerize the frontend application you have to Run
 
 ```bash
-npm run preview
+npm run docker:build_run
 ```
 
-Checkout the [deployment documentation](https://v3.nuxtjs.org/docs/deployment) for more information.
+This command will
+- Build the application
+- Remove the image with the name `vps-frontend-image`
+- Create the image with the name `vps-frontend-image`
+- Remove the container with the name `vps-frontend`
+- Run the container with the name `vps-frontend`
+
+> This will take some time, so please be patient.
+
+After the dockerization is complete you can view the application via the url
+
+[http://localhost:8080/](http://localhost:8080/)
