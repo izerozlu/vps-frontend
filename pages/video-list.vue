@@ -61,23 +61,13 @@
           return {
             onClick: isSelectable
               ? () => handleRowClickForSelect(video)
-              : () => handleRowClickForVideoView(video),
+              : () => navigateToVideoForm(video.id),
           };
         }
       "
       bordered
       row-class-name="table__row"
-    >
-      <template #bodyCell="{ text, column }">
-        <button type="button" v-if="column.dataIndex === 'title'">
-          <FolderOpenOutlined />
-          {{ text }}
-        </button>
-        <template v-else>
-          {{ text }}
-        </template>
-      </template>
-    </AntTable>
+    />
   </div>
 </template>
 
@@ -111,6 +101,7 @@ definePageMeta({
 
 const { t } = useI18n();
 const toast = useToast();
+const router = useRouter();
 
 const patientStore = usePatientStore();
 const sidenavStore = useSidenavStore();
@@ -135,8 +126,11 @@ const updateSelectedRows = (keys: Key[]) => {
   selectedRowKeys.value = keys;
 };
 
-const handleRowClickForVideoView = (video: IVideo) => {
-  window.open(video.fileUrl, '_blank');
+const navigateToVideoForm = (videoId?: number) => {
+  router.push({
+    path: ERoutes.VIDEO_FORM,
+    query: { type: 'update', videoId },
+  });
 };
 
 const startRemoval = () => {
@@ -229,7 +223,7 @@ const columns = [
   }
 }
 
-.table {
+.video-list__table {
   :deep(.table__row) {
     @apply cursor-pointer;
   }

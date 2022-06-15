@@ -89,6 +89,7 @@ import useSidenavStore from '@/store/sidenav';
 import setupSidenavStore from '@/utils/setup-sidenav-store';
 import useDiagnosisStore from '@/store/diagnosis';
 import useVideoStore from '@/store/video';
+import IVideo from '~~/interfaces/video';
 
 definePageMeta({
   title: 'Diagnosis Form',
@@ -97,6 +98,7 @@ definePageMeta({
 });
 
 const { t } = useI18n();
+const route = useRoute();
 const router = useRouter();
 const toast = useToast();
 
@@ -129,6 +131,7 @@ const handleVideoFileChange = (event: { target: { files: File[] } }) => {
 };
 
 const submitForm = async () => {
+  const { type } = route.query;
   sidenavStore.isLoading = true;
   isFetching.value = true;
 
@@ -141,17 +144,25 @@ const submitForm = async () => {
 
   const formData = new FormData();
   formData.append('data', JSON.stringify(data));
-  formData.append('file', file, file.name);
+
+  if (file?.name) {
+    formData.append('file', file, file.name);
+  }
 
   let result;
 
   // TODO [ozlui] use some constant for the url
   // Cannot send a file via Nuxt server api to backend, therefore directly sending from client
   try {
-    const response = await fetch('http://localhost:8090/videos', {
-      method: 'POST',
-      body: formData,
-    });
+    const response = await fetch(
+      `http://localhost:8090/videos${
+        type === 'update' ? '/' + videoStore.form.id : ''
+      }`,
+      {
+        method: type === 'update' ? 'PATCH' : 'POST',
+        body: formData,
+      }
+    );
     result = await response.json();
   } catch (error) {
     toast.error(t('error-messages.unknown'), { timeout: 0 });
@@ -172,9 +183,28 @@ const submitForm = async () => {
 // Life Cycle Hooks
 
 onMounted(async () => {
+  const { type, videoId } = route.query;
+
   setupSidenavStore(t('video-form'), ERoutes.VIDEO_FORM);
   videoStore.resetForm();
-  patientStore.fetchPatients();
+  await patientStore.fetchPatients();
+
+  if (type === 'update' && videoId) {
+    const selectedPatientId = patientStore.selectedPatient?.id;
+
+    if (selectedPatientId) {
+      videoStore.form =
+        videoStore.videoPatientMap[selectedPatientId].find(
+          (video) => video.id === parseInt(videoId.toString())
+        ) || ({} as IVideo);
+
+      sidenavStore.pageTitle += ` | ${videoStore.form.title}`;
+    }
+
+    if (!videoStore.form.id) {
+      router.push(ERoutes.VIDEO_LIST);
+    }
+  }
 });
 
 onUnmounted(() => {
