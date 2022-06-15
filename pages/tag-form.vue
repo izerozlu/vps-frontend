@@ -126,6 +126,7 @@ import ERoutes from '@/enums/routes';
 import setupSidenavStore from '@/utils/setup-sidenav-store';
 import handleResponse from '~~/utils/handle-response';
 import IServerResponse from '~~/interfaces/server-response';
+import ITag from '~~/interfaces/tag';
 
 definePageMeta({
   title: 'Diagnosis Form',
@@ -134,10 +135,9 @@ definePageMeta({
 });
 
 const { t } = useI18n();
+const route = useRoute();
 const router = useRouter();
-const toast = useToast();
 
-const diagnosisStore = useDiagnosisStore();
 const patientStore = usePatientStore();
 const sidenavStore = useSidenavStore();
 const videoStore = useVideoStore();
@@ -148,23 +148,38 @@ const isFetching = ref(false);
 // Methods
 
 const submitForm = async () => {
+  const { type } = route.query;
   sidenavStore.isLoading = true;
   isFetching.value = true;
 
   tagStore.form.video = { id: videoStore.selectedVideo?.id };
-
-  await handleResponse(
-    $fetch<IServerResponse>('/api/tag/save', {
-      body: tagStore.form,
-      method: 'POST',
-    }),
-    {
-      success: () => {
-        tagStore.resetForm();
-        router.push(ERoutes.TAG_LIST);
-      },
-    }
-  );
+  if (type === 'update') {
+    await handleResponse(
+      $fetch<IServerResponse>(`/api/tag/update?id=${tagStore.form.id}`, {
+        body: tagStore.form,
+        method: 'PATCH',
+      }),
+      {
+        success: () => {
+          tagStore.resetForm();
+          router.push(ERoutes.TAG_LIST);
+        },
+      }
+    );
+  } else {
+    await handleResponse(
+      $fetch<IServerResponse>('/api/tag/save', {
+        body: tagStore.form,
+        method: 'POST',
+      }),
+      {
+        success: () => {
+          tagStore.resetForm();
+          router.push(ERoutes.TAG_LIST);
+        },
+      }
+    );
+  }
   isFetching.value = false;
   sidenavStore.isLoading = false;
 };
@@ -172,9 +187,27 @@ const submitForm = async () => {
 // Life Cycle Hooks
 
 onMounted(async () => {
+  const { type, tagId } = route.query;
   setupSidenavStore(t('tag-form'), ERoutes.TAG_FORM);
   videoStore.resetForm();
-  patientStore.fetchPatients();
+  await patientStore.fetchPatients();
+
+  if (type === 'update' && tagId) {
+    const selectedVideoId = videoStore.selectedVideo?.id;
+
+    if (selectedVideoId) {
+      tagStore.form =
+        tagStore.tagVideoMap[selectedVideoId].find(
+          (tag) => tag.id === parseInt(tagId.toString())
+        ) || ({} as ITag);
+
+      sidenavStore.pageTitle += ` | ${tagStore.form.tag}`;
+    }
+
+    if (!tagStore.form.id) {
+      router.push(ERoutes.TAG_LIST);
+    }
+  }
 });
 
 onUnmounted(() => {

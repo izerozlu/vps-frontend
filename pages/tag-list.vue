@@ -77,11 +77,11 @@
           : null
       "
       :custom-row="
-        (video) => {
+        (tag) => {
           return {
             onClick: isSelectable
-              ? () => handleRowClickForSelect(video)
-              : () => handleRowClickForVideoView(video),
+              ? () => handleRowClickForSelect(tag)
+              : () => navigateToTagForm(tag.id),
           };
         }
       "
@@ -132,6 +132,7 @@ definePageMeta({
 
 const { t } = useI18n();
 const toast = useToast();
+const router = useRouter();
 
 const patientStore = usePatientStore();
 const sidenavStore = useSidenavStore();
@@ -143,6 +144,13 @@ const isRemoving = ref(false);
 const selectedRowKeys = ref<Key[]>([]);
 
 // Methods
+
+const navigateToTagForm = (tagId?: number) => {
+  router.push({
+    path: ERoutes.TAG_FORM,
+    query: { type: 'update', tagId },
+  });
+};
 
 const handleRowClickForSelect = (video: IVideo) => {
   const { key } = video;
@@ -257,7 +265,7 @@ const columns = [
   }
 }
 
-.table {
+.tag-list__table {
   :deep(.table__row) {
     @apply cursor-pointer;
   }
