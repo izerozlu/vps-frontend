@@ -1,3 +1,5 @@
+import ITag from './tag';
+
 interface IVideo {
   id?: number;
   title: string;
@@ -6,6 +8,7 @@ interface IVideo {
   fileUrl: string;
   key?: number;
   rawFile?: File;
+  videoTagList?: ITag[];
 }
 
 export default IVideo;

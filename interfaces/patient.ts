@@ -6,6 +6,7 @@ import EMaritalStatus from '@/enums/marital-status';
 import EParentingAttitude from '@/enums/parenting-attitude';
 import IDiagnosis from '@/interfaces/diagnosis';
 import { Key } from 'ant-design-vue/es/_util/type';
+import IVideo from './video';
 
 interface IPatient {
   id: number;
@@ -34,6 +35,7 @@ interface IPatient {
   // TODO [ozlui] Ask Dilsen about how to implement this field for the PatientForm
   previousDiagnosis: IDiagnosis[];
   key?: Key;
+  videos?: IVideo[];
 }
 
 export default IPatient;

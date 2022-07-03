@@ -15,6 +15,7 @@ const usePatientStore = defineStore('patient', {
       form: {} as IPatient,
       query: '',
       selectedPatient: {} as IPatient,
+      patientDetail: {} as IPatient,
     };
   },
   actions: {
@@ -48,6 +49,15 @@ const usePatientStore = defineStore('patient', {
         }
       );
       sidenavStore.isLoading = false;
+    },
+    async fetchPatientDetail(patientId: number) {
+      if (!this.list?.length) {
+        await this.fetchPatients();
+      }
+
+      this.patientDetail = this.list.find(
+        (patient) => patient.id === patientId
+      );
     },
   },
   getters: {

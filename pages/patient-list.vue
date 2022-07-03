@@ -70,7 +70,10 @@
           return {
             onClick: isSelectable
               ? () => handleRowClickForSelect(patient)
-              : () => navigateToPatientForm(patient.id),
+              : () =>
+                  isSearch
+                    ? navigateToPatientDetail(patient)
+                    : navigateToPatientForm(patient.id),
           };
         }
       "
@@ -240,11 +243,19 @@ const setDebouncedQuery = debounce(400, false, (value: string) => {
 
 const searchPatients = debounce(400, false, (searchText: string) => {
   if (searchText) {
-    patientStore.searchPatients(searchText);
+    patientStore.searchPatients(searchText.toLowerCase());
   } else {
-    patientStore.fetchPatients();
+    patientStore.list = [];
   }
 });
+
+const navigateToPatientDetail = (patient: IPatient) => {
+  patientStore.patientDetail = patient;
+  router.push({
+    path: ERoutes.PATIENT_DETAIL,
+    query: { patientId: patient.id },
+  });
+};
 
 // Life Cycle Hooks
 
@@ -253,7 +264,9 @@ onMounted(() => {
     t(`title.${props.isSearch ? 'search' : 'list'}`),
     ERoutes.PATIENT_LIST
   );
-  patientStore.fetchPatients();
+  if (!props.isSearch) {
+    patientStore.fetchPatients();
+  }
 });
 
 const columns = [

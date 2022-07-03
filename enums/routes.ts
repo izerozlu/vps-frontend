@@ -11,6 +11,7 @@ enum ERoutes {
   TAG_LIST = '/tag-list',
   TAG_FORM = '/tag-form',
   SEARCH = '/search',
+  PATIENT_DETAIL = '/patient-detail',
 }
 
 export default ERoutes;
