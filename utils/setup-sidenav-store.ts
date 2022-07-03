@@ -16,6 +16,11 @@ const setupSidenavStore = (
       icon: 'dashboard',
       route: ERoutes.ADMIN_BOARD,
     },
+    {
+      label: t('search'),
+      icon: 'search',
+      route: ERoutes.SEARCH,
+    },
   ];
   sidenavStore.routesToActivateAdminItem = [routesToActivateSidenavItem].flat();
 };

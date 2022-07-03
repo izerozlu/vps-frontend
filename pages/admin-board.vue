@@ -54,7 +54,6 @@ const { t } = useI18n();
 definePageMeta({
   title: 'VPS Dashboard',
   alias: [ERoutes.ADMIN_BOARD, ERoutes.INDEX],
-  middleware: ['redirect-to-admin-board'],
   layout: 'with-sidenav',
 });
 

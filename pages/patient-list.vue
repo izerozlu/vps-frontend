@@ -3,7 +3,7 @@
     class="flex flex-col h-min-[200px] patient-list basis-full"
     :class="{ 'pointer-events-none opacity-70': sidenavStore.isLoading }"
   >
-    <div class="flex mb-6 patient-list__search-and-actions">
+    <div class="flex mb-6 patient-list__search-and-actions" v-if="!isSearch">
       <AntInput
         class="h-14 w-full patient-list__search !w-60 !border-none !rounded-xl !py-0 !pl-10 mr-auto"
         :placeholder="t('search')"
@@ -39,10 +39,22 @@
         <span class="w-full">{{ t('cancel') }}</span>
       </AntButton>
     </div>
+    <div class="patient-list__search mb-6" v-else>
+      <AntInput
+        class="h-14 w-full patient-list__search !w-60 !border-none !rounded-xl !py-0 !pl-10 mr-auto"
+        :placeholder="t('search')"
+        :disabled="sidenavStore.isLoading"
+        @change="(event) => searchPatients(event.target.value)"
+      >
+        <template #suffix>
+          <SearchOutlined />
+        </template>
+      </AntInput>
+    </div>
     <AntTable
       class="patient-list__patient-table patient-table"
       :data-source="filteredPatients"
-      :columns="columns"
+      :columns="isSearch ? searchColumns : columns"
       :scroll="{ x: 'calc(150vw)', y: sidenavStore.tableBodyHeight }"
       :pagination="false"
       :row-selection="
@@ -102,12 +114,6 @@ import setupSidenavStore from '@/utils/setup-sidenav-store';
 import handleResponse from '@/utils/handle-response';
 import generateColumnProcessorFunction from '@/utils/column-processor';
 
-definePageMeta({
-  title: 'Patient List',
-  layout: 'with-sidenav',
-  alias: ERoutes.PATIENT_LIST,
-});
-
 const { t } = useI18n();
 const router = useRouter();
 const toast = useToast();
@@ -119,6 +125,17 @@ const isSelectable = ref(false);
 const isRemoving = ref(false);
 const selectedRowKeys = ref<Key[]>([]);
 const debouncedQuery = ref('');
+const searchText = ref('');
+const debouncedSearchText = ref('');
+
+// Props
+
+const props = defineProps<{ hideActions?: boolean; isSearch?: boolean }>();
+
+definePageMeta({
+  layout: 'with-sidenav',
+  alias: ERoutes.PATIENT_LIST,
+});
 
 // Computed
 
@@ -221,10 +238,21 @@ const setDebouncedQuery = debounce(400, false, (value: string) => {
   debouncedQuery.value = value;
 });
 
+const searchPatients = debounce(400, false, (searchText: string) => {
+  if (searchText) {
+    patientStore.searchPatients(searchText);
+  } else {
+    patientStore.fetchPatients();
+  }
+});
+
 // Life Cycle Hooks
 
 onMounted(() => {
-  setupSidenavStore(t('patient-records'), ERoutes.PATIENT_LIST);
+  setupSidenavStore(
+    t(`title.${props.isSearch ? 'search' : 'list'}`),
+    ERoutes.PATIENT_LIST
+  );
   patientStore.fetchPatients();
 });
 
@@ -319,6 +347,39 @@ const columns = [
   },
   { dataIndex: 'savedDate', title: t('patient.saved-date') },
 ].map((column) => ({ ...column, ellipsis: true }));
+
+const searchColumns = [
+  { dataIndex: 'tckn', title: t('patient.tckn') },
+  {
+    dataIndex: 'name',
+    title: t('patient.name'),
+  },
+  {
+    dataIndex: 'lastName',
+    title: t('patient.last-name'),
+  },
+  { dataIndex: 'birthDate', title: t('patient.birth-date') },
+  {
+    dataIndex: 'gender',
+    title: t('patient.gender'),
+    customRender: generateColumnProcessorFunction('gender'),
+  },
+  {
+    dataIndex: 'education',
+    title: t('patient.education'),
+    customRender: generateColumnProcessorFunction('education'),
+  },
+  {
+    dataIndex: 'profession',
+    title: t('patient.profession'),
+  },
+  {
+    dataIndex: 'alcoholUsage',
+    title: t('patient.alcohol-usage'),
+    customRender: generateColumnProcessorFunction('alcohol-usage'),
+  },
+  { dataIndex: 'savedDate', title: t('patient.saved-date') },
+].map((column) => ({ ...column, ellipsis: true }));
 </script>
 
 <style scoped lang="scss">
@@ -347,6 +408,9 @@ const columns = [
 
 <i18n lang="yaml">
 tr:
+  title:
+    search: Arama
+    list: Hasta Kayıtları
   search: Arama
   change: Değiştir
   add: Ekle

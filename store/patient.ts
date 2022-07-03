@@ -37,6 +37,18 @@ const usePatientStore = defineStore('patient', {
       });
       sidenavStore.isLoading = false;
     },
+    async searchPatients(searchText: string) {
+      const sidenavStore = useSidenavStore();
+      sidenavStore.isLoading = true;
+      await handleResponse(
+        $fetch(`/api/patient/search?search-text=${searchText}`),
+        {
+          success: (response: IServerResponse) =>
+            (this.list = response.data.list),
+        }
+      );
+      sidenavStore.isLoading = false;
+    },
   },
   getters: {
     formFullName(): string {

@@ -10,6 +10,7 @@ enum ERoutes {
   VIDEO_FORM = '/video-form',
   TAG_LIST = '/tag-list',
   TAG_FORM = '/tag-form',
+  SEARCH = '/search',
 }
 
 export default ERoutes;

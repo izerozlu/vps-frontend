@@ -6,7 +6,7 @@
       >
         <BrandName class="mb-16 with-sidenav-layout__brand-name" />
         <SidenavItem
-          class="with-sidenav-layout__sidenav-item"
+          class="with-sidenav-layout__sidenav-item mb-2 last:mb-0"
           v-for="item in sidenavStore.items"
           :key="item.route"
           :item="item"
