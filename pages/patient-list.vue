@@ -43,7 +43,6 @@
       <AntInput
         class="h-14 w-full patient-list__search !w-60 !border-none !rounded-xl !py-0 !pl-10 mr-auto"
         :placeholder="t('search')"
-        :disabled="sidenavStore.isLoading"
         @change="(event) => searchPatients(event.target.value)"
       >
         <template #suffix>

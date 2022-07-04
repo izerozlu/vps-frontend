@@ -59,6 +59,9 @@ const usePatientStore = defineStore('patient', {
         (patient) => patient.id === patientId
       );
     },
+    resetList() {
+      this.list = [];
+    },
   },
   getters: {
     formFullName(): string {

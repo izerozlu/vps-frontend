@@ -35,12 +35,12 @@
           v-for="video of patientStore.patientDetail.videos"
         >
           <video
-            class="video__player rounded-xl w-[600px] mb-4"
+            class="video__player rounded-xl w-[600px] rounded-b-none"
             :src="video.fileUrl"
             controls
           />
           <div
-            class="video__properties flex flex-col text-base p-3 mx-4 rounded-xl w-full h-min"
+            class="video__properties flex flex-col text-base p-3 mx-4 rounded-xl rounded-t-none w-full h-min"
           >
             <span
               class="video__title font-semibold"
@@ -50,9 +50,10 @@
             </span>
             <div class="video__tags flex flex-wrap">
               <button
-                class="video__tag tag rounded-xl mr-2 mb-2 border-2 border-solid p-2 hover:bg-gray-200"
+                class="video__tag tag rounded-xl mr-2 mb-2 border-2 border-solid p-2 hover:bg-gray-200 active:bg-gray-300"
                 type="button"
                 v-for="{ tag, startTime, endTime } of video.videoTagList"
+                @click="setCurrentTimeForVideo($event, startTime)"
               >
                 <span class="tag__name font-bold mr-2">{{ tag }}:</span>
                 <span class="tag__start-time mr-1">{{ startTime }} -</span>
@@ -67,10 +68,13 @@
 </template>
 
 <script lang="ts" setup>
-import ERoutes from '~~/enums/routes';
-import usePatientStore from '@/store/patient';
-import setupSidenavStore from '~~/utils/setup-sidenav-store';
 import { useI18n } from 'vue-i18n';
+
+import ERoutes from '@/enums/routes';
+import usePatientStore from '@/store/patient';
+import setupSidenavStore from '@/utils/setup-sidenav-store';
+import ITag from '@/interfaces/tag';
+import IVideo from '~~/interfaces/video';
 
 const fields = [
   { field: 'birthDate', translationKey: 'birth-date' },
@@ -98,14 +102,40 @@ const diagnosis = computed(() => {
   );
 });
 
+// Methods
+
+const sortVideoTags = () => {
+  patientStore.patientDetail.videos?.forEach((video) => {
+    video.videoTagList = video.videoTagList.sort((tagA: ITag, tagB: ITag) => {
+      const [tagAStartMinute, tagAStartSecond] = tagA.startTime.split(':');
+      const tagAValue = Number.parseInt(tagAStartMinute) * 60 + tagAStartSecond;
+      const [tagBStartMinute, tagBStartSecond] = tagB.startTime.split(':');
+      const tagBValue = Number.parseInt(tagBStartMinute) * 60 + tagBStartSecond;
+
+      return tagAValue === tagBValue ? 0 : tagAValue > tagBValue ? 1 : -1;
+    });
+  });
+};
+
+const setCurrentTimeForVideo = (event: MouseEvent, startTime: string) => {
+  const videoElement: HTMLVideoElement = (event.target as HTMLButtonElement)
+    .closest('.patient-detail__video')
+    .querySelector('video');
+
+  const [minute, second] = startTime.split(':');
+  videoElement.currentTime =
+    Number.parseInt(minute) * 60 + Number.parseInt(second);
+};
+
 // Life Cycle Methods
 
-onMounted(() => {
+onMounted(async () => {
   setupSidenavStore(t('title'), ERoutes.PATIENT_LIST);
   const { patientId } = route.query;
 
   if (patientId) {
-    patientStore.fetchPatientDetail(Number.parseInt(patientId as string));
+    await patientStore.fetchPatientDetail(Number.parseInt(patientId as string));
+    sortVideoTags();
   } else {
     router.push({
       path: ERoutes.SEARCH,
