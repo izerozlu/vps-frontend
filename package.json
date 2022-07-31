@@ -1,13 +1,16 @@
 {
   "private": true,
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "replace-environment:dev": "cp ./environments/development.env ./.env",
+    "replace-environment:prod": "cp ./environments/production.env ./.env",
+    "dev": "npm run replace-environment:dev && nuxt dev",
+    "build": "npm run replace-environment:prod && nuxt build",
     "start": "node .output/server/index.mjs",
+    "build_start": "npm run build && npm run start",
     "docker:build": "npm run build && docker container stop vps-frontend || true && docker container rm vps-frontend || true && docker image rm vps-frontend-image || true && docker build -t vps-frontend-image .",
-    "docker:run": "docker container stop vps-frontend || true && docker container rm vps-frontend || true && docker run --name vps-frontend -p 8080:3000 -d vps-frontend-image",
+    "docker:run": "docker container stop vps-frontend || true && docker container rm vps-frontend || true && docker run --name vps-frontend -p 8080:3000 -d --network vps -e VPS_API=http://172.19.0.4:8090 vps-frontend-image",
     "docker:build_run": "npm run docker:build && npm run docker:run"
   },
   "dependencies": {

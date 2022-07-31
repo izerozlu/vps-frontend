@@ -11,10 +11,10 @@ export default defineNuxtConfig({
     'ant-design-vue/dist/antd.css',
     'vue-toastification/dist/index.css',
     '~/assets/styles/main.scss',
-    '~/assets/styles/fonts.scss',
+    '~/assets/styles/fonts.scss'
   ],
   build: {
-    transpile: ['primevue'],
+    transpile: ['primevue']
   },
   // @ts-ignore: vite-svg-loader has to be included via vite.plugins congiguration but something is off with types
   // https://github.com/nuxt-community/svg-module/issues/86#issuecomment-944341678
@@ -22,8 +22,13 @@ export default defineNuxtConfig({
     plugins: [
       svgLoader(),
       vueI18n({
-        include: path.resolve(__dirname, './locales/**'),
-      }),
-    ],
+        include: path.resolve(__dirname, './locales/**')
+      })
+    ]
   },
+  publicRuntimeConfig: {
+    baseUrl: process.env.VPS_API_IP_ADDRESS && process.env.VPS_API_PORT ?
+      `http://${process.env.VPS_API_IP_ADDRESS}:${process.env.VPS_API_PORT}` :
+      'http://localhost:8090'
+  }
 });

@@ -6,12 +6,14 @@ const sendRequest = async (
 ) => {
   let result: any;
   let response: Response;
+  // noinspection TypeScriptUnresolvedFunction
+  const { baseUrl } = useRuntimeConfig();
 
   try {
-    response = await fetch(`http://localhost:8090${path}`, {
+    response = await fetch(`${baseUrl}${path}`, {
       headers: { 'Content-Type': contentType },
       method,
-      body,
+      body
     });
     result = await response.json();
   } catch (error) {
@@ -20,7 +22,7 @@ const sendRequest = async (
 
   return {
     data: result || null,
-    status: response?.status === 200 ? 'success' : 'fail',
+    status: response?.status === 200 ? 'success' : 'fail'
   };
 };
 

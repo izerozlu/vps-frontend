@@ -30,6 +30,18 @@ npm run build
 
 ## Create docker image and container
 
+### Setup
+1. You have to install dependencies via
+```bash
+npm run install
+```
+2. Update environment file `/environments/production.env`.
+3. You'll see that there's two environment variables there. Modify those to align with your local environment.
+    1. `VPS_API_IP_ADDRESS` is for the ip address of the `vps-api` container.
+    2. `VPS_API_PORT` is for the port of the `vps-api` container.
+
+
+### Run
 To dockerize the frontend application you have to Run
 
 ```bash
