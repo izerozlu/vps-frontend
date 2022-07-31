@@ -33,7 +33,7 @@ npm run build
 ### Setup
 1. You have to install dependencies via
 ```bash
-npm run install
+npm install
 ```
 2. Update environment file `/environments/production.env`.
 3. You'll see that there's two environment variables there. Modify those to align with your local environment.
@@ -58,5 +58,5 @@ This command will
 > This will take some time, so please be patient.
 
 After the dockerization is complete you can view the application via the url
-
 [http://localhost:8080/](http://localhost:8080/)
+
