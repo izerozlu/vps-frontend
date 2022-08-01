@@ -1,7 +1,7 @@
 const sendRequest = async (
   path: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' = 'GET',
-  body?: any,
+  body: any,
   contentType: string = 'application/json'
 ) => {
   let result: any;
@@ -11,9 +11,9 @@ const sendRequest = async (
 
   try {
     response = await fetch(`${baseUrl}${path}`, {
-      headers: { 'Content-Type': contentType },
+      headers: { 'content-type': contentType },
       method,
-      body
+      body: JSON.stringify(body),
     });
     result = await response.json();
   } catch (error) {
@@ -22,7 +22,7 @@ const sendRequest = async (
 
   return {
     data: result || null,
-    status: response?.status === 200 ? 'success' : 'fail'
+    status: response?.status === 200 ? 'success' : 'fail',
   };
 };
 

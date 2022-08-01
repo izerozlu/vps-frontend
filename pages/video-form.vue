@@ -39,7 +39,7 @@
         :allow-clear="false"
       />
     </div>
-    <div class="video-form__field">
+    <div class="video-form__field" v-if="!isUpdate">
       <label class="mr-16 video-form__label" for="file">
         {{ t('video.video') }}:
       </label>
@@ -90,9 +90,10 @@ import setupSidenavStore from '@/utils/setup-sidenav-store';
 import useDiagnosisStore from '@/store/diagnosis';
 import useVideoStore from '@/store/video';
 import IVideo from '~~/interfaces/video';
+import handleResponse from '~/utils/handle-response';
 
 definePageMeta({
-  title: 'Diagnosis Form',
+  title: 'Video Form',
   alias: ERoutes.DIAGNOSIS_FORM,
   layout: 'with-sidenav',
 });
@@ -101,6 +102,7 @@ const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
+const { baseUrl } = useRuntimeConfig();
 
 const diagnosisStore = useDiagnosisStore();
 const patientStore = usePatientStore();
@@ -123,15 +125,17 @@ const savedDate = computed({
   },
 });
 
+const isUpdate = computed(() => {
+  return route.query.type === 'update';
+});
+
 // Methods
 
 const handleVideoFileChange = (event: { target: { files: File[] } }) => {
-  const video = event.target.files[0];
-  videoStore.form.rawFile = video;
+  videoStore.form.rawFile = event.target.files[0];
 };
 
 const submitForm = async () => {
-  const { type } = route.query;
   sidenavStore.isLoading = true;
   isFetching.value = true;
 
@@ -140,41 +144,48 @@ const submitForm = async () => {
     patient: { id: patientStore.selectedPatient.id },
     savedDate: videoStore.form.savedDate,
   };
-  const file = videoStore.form.rawFile;
 
-  const formData = new FormData();
-  formData.append('data', JSON.stringify(data));
-
-  if (file?.name) {
-    formData.append('file', file, file.name);
-  }
-
-  let result;
-
-  // TODO [ozlui] use some constant for the url
-  // Cannot send a file via Nuxt server api to backend, therefore directly sending from client
-  try {
-    const response = await fetch(
-      `http://localhost:8090/videos${
-        type === 'update' ? '/' + videoStore.form.id : ''
-      }`,
+  if (isUpdate.value) {
+    await handleResponse(
+      $fetch(`/api/video/update?videoId=${videoStore.form.id}`, {
+        body: data,
+        method: 'PATCH',
+      }),
       {
-        method: type === 'update' ? 'PATCH' : 'POST',
-        body: formData,
+        success: () => {
+          videoStore.resetForm();
+          router.push(ERoutes.VIDEO_LIST);
+        },
       }
     );
-    result = await response.json();
-  } catch (error) {
-    toast.error(t('error-messages.unknown'), { timeout: 0 });
-    console.error(error);
-  }
+  } else {
+    const file = videoStore.form.rawFile;
 
-  if (result?.id) {
-    videoStore.resetForm();
-    router.push(ERoutes.VIDEO_LIST);
-  } else if (result && !result.id) {
-    console.error(result);
-    toast.error(t('error-messages.video.save'), { timeout: 0 });
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(data));
+
+    if (file?.name) {
+      formData.append('file', file, file.name);
+    }
+
+    try {
+      const response = await fetch(`${baseUrl}/videos`, {
+        method: 'POST',
+        body: formData,
+      });
+      const result = await response.json();
+
+      if (result?.id) {
+        videoStore.resetForm();
+        router.push(ERoutes.VIDEO_LIST);
+      } else if (result && !result.id) {
+        console.error(result);
+        toast.error(t('error-messages.video.save'), { timeout: 0 });
+      }
+    } catch (error) {
+      toast.error(t('error-messages.unknown'), { timeout: 0 });
+      console.error(error);
+    }
   }
   isFetching.value = false;
   sidenavStore.isLoading = false;
@@ -224,12 +235,12 @@ onUnmounted(() => {
 .video-form__input {
   &:not(.video-form__input--dropdown):not(.video-form__input--checkbox) {
     @apply min-w-[420px];
-    box-shadow: 0px 11px 23px 0px #00000005;
+    box-shadow: 0 11px 23px 0 #00000005;
   }
 
   :deep(input) {
     @apply border-none min-w-[420px] py-4 px-8;
-    box-shadow: 0px 11px 23px 0px #00000005;
+    box-shadow: 0 11px 23px 0 #00000005;
   }
 }
 

@@ -326,7 +326,7 @@ const salaryRangeOptions = [
   },
   {
     label: t('salary-range.between-5000-10000'),
-    value: ESalaryRange.BETWEEN_5000_10000,
+    value: ESalaryRange.BETWEEN,
   },
   {
     label: t('salary-range.above-10000'),
@@ -527,12 +527,12 @@ onUnmounted(() => {
 .patient-form__input {
   &:not(.patient-form__input--dropdown):not(.patient-form__input--checkbox) {
     @apply min-w-[420px];
-    box-shadow: 0px 11px 23px 0px #00000005;
+    box-shadow: 0 11px 23px 0 #00000005;
   }
 
   :deep(input) {
     @apply border-none min-w-[420px] py-4 px-8;
-    box-shadow: 0px 11px 23px 0px #00000005;
+    box-shadow: 0 11px 23px 0 #00000005;
   }
 }
 
