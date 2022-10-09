@@ -9,7 +9,7 @@
     "build": "npm run replace-environment:prod && nuxt build",
     "start": "node .output/server/index.mjs",
     "build_start": "npm run build && npm run start",
-    "docker:build": "npm run build && docker container stop vps-frontend || true && docker container rm vps-frontend || true && docker image rm vps-frontend-image || true && docker build -t vps-frontend-image .",
+    "docker:build": "npm i && npm run build && docker container stop vps-frontend || true && docker container rm vps-frontend || true && docker image rm vps-frontend-image || true && docker build -t vps-frontend-image .",
     "docker:run": "docker container stop vps-frontend || true && docker container rm vps-frontend || true && docker run --name vps-frontend -p 8080:3000 -d --network vps vps-frontend-image",
     "docker:build_run": "npm run docker:build && npm run docker:run"
   },
