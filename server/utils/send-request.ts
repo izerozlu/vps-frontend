@@ -1,7 +1,7 @@
 const sendRequest = async (
   path: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' = 'GET',
-  body: any,
+  body?: any,
   contentType: string = 'application/json'
 ) => {
   let result: any;

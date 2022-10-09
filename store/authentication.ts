@@ -5,7 +5,9 @@ import handleResponse from '@/utils/handle-response';
 const useAuthenticationStore = defineStore('authentication', {
   state: () => {
     return {
-      isLoggedIn: useCookie(EAuthentication.IS_LOGGED_IN).value === 'true',
+      isLoggedIn:
+        useCookie(EAuthentication.IS_LOGGED_IN).value === 'true' &&
+        useCookie(EAuthentication.USERNAME).value,
       username: useCookie(EAuthentication.USERNAME).value,
     };
   },
