@@ -34,10 +34,13 @@
           class="patient-detail__video video mb-12 mr-8 flex flex-col items-center w-[600px]"
           v-for="video of patientStore.patientDetail.videos"
         >
+          <!-- remove this mock src -->
           <video
             class="video__player rounded-xl w-[600px] rounded-b-none"
-            :src="video.fileUrl"
+            src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
             controls
+            @play="(event) => activateVideo(video, event)"
+            ref="videoRefs"
           />
           <div
             class="video__properties flex flex-col text-base p-3 mx-4 rounded-xl rounded-t-none w-full h-min"
@@ -51,19 +54,37 @@
             <div class="video__tags flex flex-wrap">
               <button
                 class="video__tag tag rounded-xl mr-2 mb-2 border-2 border-solid p-2 hover:bg-gray-200 active:bg-gray-300"
+                :class="{
+                  'bg-american-purple text-white hover:text-black':
+                    !tag.tag || !tag.endTime,
+                }"
                 type="button"
-                v-for="{ tag, startTime, endTime } of video.videoTagList"
-                @click="setCurrentTimeForVideo($event, startTime)"
+                v-for="tag of video.videoTagList"
+                @click="(event) => activateTag({ tag, video, event })"
               >
-                <span class="tag__name font-bold mr-2">{{ tag }}:</span>
-                <span class="tag__start-time mr-1">{{ startTime }} -</span>
-                <span class="tag__end-time">{{ endTime }}</span>
+                <span class="tag__name mr-2 font-bold" v-if="tag.tag">
+                  {{ tag.tag }}:
+                </span>
+                <span class="tag__no-name font-bold mr-2" v-else>
+                  {{ t('new-tag') }}:
+                </span>
+                <span class="tag__start-time mr-1">{{ tag.startTime }}</span>
+                <span class="tag__end-time" v-if="tag.endTime">
+                  - {{ tag.endTime }}
+                </span>
               </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <TagRegistrationModal
+      :tag="tagRegistration.tag"
+      :video="tagRegistration.video"
+      :visible="tagRegistration.visible"
+      @cancel="cancelTagRegistration"
+      @save="saveTagRegistration"
+    />
   </div>
 </template>
 
@@ -74,7 +95,10 @@ import ERoutes from '@/enums/routes';
 import usePatientStore from '@/store/patient';
 import setupSidenavStore from '@/utils/setup-sidenav-store';
 import ITag from '@/interfaces/tag';
-import IVideo from '~~/interfaces/video';
+import IVideo from '~/interfaces/video';
+import TagRegistrationModal from '~/components/tag-registration-modal.vue';
+import handleResponse from '~/utils/handle-response';
+import IServerResponse from '~/interfaces/server-response';
 
 const fields = [
   { field: 'birthDate', translationKey: 'birth-date' },
@@ -91,6 +115,15 @@ definePageMeta({
   layout: 'with-sidenav',
   alias: ERoutes.PATIENT_DETAIL,
 });
+
+const videoRefs = ref<HTMLVideoElement[]>();
+
+const playingVideo = ref<IVideo>();
+const tagRegistration = ref<{
+  tag?: ITag;
+  video?: IVideo;
+  visible: boolean;
+}>({});
 
 // Computed
 
@@ -117,6 +150,21 @@ const sortVideoTags = () => {
   });
 };
 
+const activateTag = ({
+  tag,
+  video,
+  event,
+}: {
+  video: IVideo;
+  tag: ITag;
+  event: MouseEvent;
+}) => {
+  setCurrentTimeForVideo(event, tag.startTime);
+  if (!tag.tag || !tag.endTime) {
+    registerTag(tag, video);
+  }
+};
+
 const setCurrentTimeForVideo = (event: MouseEvent, startTime: string) => {
   const videoElement: HTMLVideoElement = (event.target as HTMLButtonElement)
     .closest('.patient-detail__video')
@@ -125,6 +173,51 @@ const setCurrentTimeForVideo = (event: MouseEvent, startTime: string) => {
   const [minute, second] = startTime.split(':');
   videoElement.currentTime =
     Number.parseInt(minute) * 60 + Number.parseInt(second);
+};
+
+const registerTag = (tag: ITag, video: IVideo) => {
+  tagRegistration.value = {
+    tag: { ...tag },
+    video,
+    visible: true,
+  };
+};
+
+const cancelTagRegistration = () => {
+  tagRegistration.value.visible = false;
+};
+
+const saveTagRegistration = (tag: ITag) => {
+  handleResponse(
+    $fetch<IServerResponse>(`/api/tag/update?id=${tag.id}`, {
+      body: { ...tag, video: { id: tagRegistration.value.video.id } },
+      method: 'PATCH',
+    }),
+    {
+      success: () => {
+        if (tagRegistration.value.video) {
+          const indexOfTag = tagRegistration.value.video.videoTagList.findIndex(
+            (tag) => tag.id === tagRegistration.value.tag.id
+          );
+          tagRegistration.value.video.videoTagList[indexOfTag] = tag;
+        }
+      },
+    }
+  );
+  cancelTagRegistration();
+};
+
+const activateVideo = (video: IVideo, event: Event) => {
+  stopOtherVideos(event);
+  playingVideo.value = video;
+};
+
+const stopOtherVideos = (event: Event) => {
+  videoRefs.value.forEach((videoElement: HTMLVideoElement) => {
+    if (videoElement !== event.target) {
+      videoElement.pause();
+    }
+  });
 };
 
 // Life Cycle Methods
@@ -171,4 +264,5 @@ tr:
     saved-date: Kayıt Tarihi
     diagnosis: Tanı
   videos: Videolar
+  new-tag: Yeni Etiket
 </i18n>

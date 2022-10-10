@@ -11,6 +11,7 @@ import {
   Tooltip,
   Upload,
   TimePicker,
+  Modal,
 } from 'ant-design-vue/lib';
 
 export default defineNuxtPlugin(({ vueApp: app }) => {
@@ -25,4 +26,5 @@ export default defineNuxtPlugin(({ vueApp: app }) => {
   app.component('AntTooltip', Tooltip);
   app.component('AntUpload', Upload);
   app.component('AntTimePicker', TimePicker);
+  app.component('AntModal', Modal);
 });

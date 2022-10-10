@@ -33,8 +33,19 @@ const usePatientStore = defineStore('patient', {
       const sidenavStore = useSidenavStore();
       sidenavStore.isLoading = true;
       await handleResponse($fetch('/api/patient/list'), {
-        success: (response: IServerResponse) =>
-          (this.list = response.data.list),
+        success: (response: IServerResponse) => {
+          // TODO remove this mock
+          response.data.list[0].videos[0].videoTagList[1] = {
+            id: 99,
+            startTime: '00:12',
+            creationDate: '2022-10-09 14:19:03',
+          };
+          response.data.list[0].videos = new Array(5)
+            .fill(0)
+            .map(() => ({ ...response.data.list[0].videos[0] }));
+          // end TODO
+          this.list = response.data.list;
+        },
       });
       sidenavStore.isLoading = false;
     },
@@ -44,8 +55,15 @@ const usePatientStore = defineStore('patient', {
       await handleResponse(
         $fetch(`/api/patient/search?search-text=${searchText}`),
         {
-          success: (response: IServerResponse) =>
-            (this.list = response.data.list),
+          success: (response: IServerResponse) => {
+            // TODO remove this mock
+            response.data.list[0].videos[0].videoTagList[1] = {
+              id: 99,
+              startTime: '00:12',
+              creationDate: '2022-10-09 14:19:03',
+            };
+            return (this.list = response.data.list);
+          },
         }
       );
       sidenavStore.isLoading = false;
