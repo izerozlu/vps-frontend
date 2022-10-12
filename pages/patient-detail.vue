@@ -32,14 +32,14 @@
       <div class="patient-detail__video-list flex flex-wrap">
         <div
           class="patient-detail__video video mb-12 mr-8 flex flex-col items-center w-[600px]"
-          v-for="video of patientStore.patientDetail.videos"
+          v-for="(video, index) of patientStore.patientDetail.videos"
         >
           <!-- remove this mock src -->
           <video
             class="video__player rounded-xl w-[600px] rounded-b-none"
-            src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            :src="video.fileUrl"
             controls
-            @play="(event) => activateVideo(video, event)"
+            @play="(event) => activateVideo({ video, event, refIndex: index })"
             ref="videoRefs"
           />
           <div
@@ -118,12 +118,18 @@ definePageMeta({
 
 const videoRefs = ref<HTMLVideoElement[]>();
 
-const playingVideo = ref<IVideo>();
+const activeVideo = ref<
+  Partial<{
+    video: IVideo;
+    element: HTMLVideoElement;
+    previousElement: HTMLVideoElement;
+  }>
+>();
 const tagRegistration = ref<{
   tag?: ITag;
   video?: IVideo;
   visible: boolean;
-}>({});
+}>({ visible: false });
 
 // Computed
 
@@ -132,6 +138,12 @@ const diagnosis = computed(() => {
     patientStore.patientDetail?.previousDiagnosis
       ?.map((diagnosis) => diagnosis.name)
       .join(', ') || []
+  );
+});
+
+const newTagsOfActiveVideo = computed(() => {
+  return activeVideo.value.video.videoTagList.filter(
+    (tag) => !tag.tag || !tag.endTime
   );
 });
 
@@ -207,9 +219,22 @@ const saveTagRegistration = (tag: ITag) => {
   cancelTagRegistration();
 };
 
-const activateVideo = (video: IVideo, event: Event) => {
+const activateVideo = ({
+  video,
+  refIndex,
+  event,
+}: {
+  video: IVideo;
+  refIndex: number;
+  event: Event;
+}) => {
   stopOtherVideos(event);
-  playingVideo.value = video;
+  activeVideo.value = {
+    video,
+    element: videoRefs.value[refIndex],
+    previousElement: activeVideo.value?.element,
+  };
+  initializeNewTagListener();
 };
 
 const stopOtherVideos = (event: Event) => {
@@ -218,6 +243,38 @@ const stopOtherVideos = (event: Event) => {
       videoElement.pause();
     }
   });
+};
+
+const initializeNewTagListener = () => {
+  activeVideo.value.previousElement?.removeEventListener(
+    'timeupdate',
+    listenForNewTag
+  );
+
+  activeVideo.value.element.addEventListener('timeupdate', listenForNewTag);
+};
+
+const listenForNewTag = () => {
+  if (!tagRegistration.value.visible) {
+    const newTagToRegister = newTagsOfActiveVideo.value
+      .filter((tag) => {
+        const [minutes, seconds] = tag.startTime.split(':');
+        const startTimeInSeconds =
+          Number.parseInt(minutes) * 60 + Number.parseInt(seconds);
+        return (
+          !tag.checkedForRegistration &&
+          activeVideo.value.element.currentTime >= startTimeInSeconds &&
+          activeVideo.value.element.currentTime - startTimeInSeconds <= 1
+        );
+      })
+      ?.pop();
+
+    if (newTagToRegister && !newTagToRegister?.checkedForRegistration) {
+      activeVideo.value.element.pause();
+      newTagToRegister.checkedForRegistration = true;
+      registerTag(newTagToRegister, activeVideo.value.video);
+    }
+  }
 };
 
 // Life Cycle Methods

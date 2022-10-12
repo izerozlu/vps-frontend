@@ -4,7 +4,6 @@
     :class="{ 'opacity-60 pointer-events-none': isFetching }"
     @submit.prevent
   >
-    <!-- TODO [ozlui] add required field validation -->
     <div class="tag-form__field h-16 flex items-center">
       <AntTooltip :visible="!patientStore.selectedPatient?.id" placement="top">
         <template #title>
@@ -113,9 +112,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons-vue';
-import { useToast } from 'vue-toastification';
-
-import useDiagnosisStore from '@/store/diagnosis';
 import useVideoStore from '@/store/video';
 import usePatientStore from '@/store/patient';
 import useSidenavStore from '@/store/sidenav';
@@ -227,12 +223,12 @@ onUnmounted(() => {
 .tag-form__input {
   &:not(.tag-form__input--dropdown):not(.tag-form__input--checkbox) {
     @apply min-w-[420px];
-    box-shadow: 0px 11px 23px 0px #00000005;
+    box-shadow: 0 11px 23px 0 #00000005;
   }
 
   :deep(input) {
     @apply border-none min-w-[420px] py-4 px-8;
-    box-shadow: 0px 11px 23px 0px #00000005;
+    box-shadow: 0 11px 23px 0 #00000005;
   }
 }
 

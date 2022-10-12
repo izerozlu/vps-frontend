@@ -6,6 +6,7 @@ interface ITag {
   startTime: string;
   endTime: string;
   video?: { id: IVideo['id'] };
+  checkedForRegistration?: boolean;
 }
 
 export default ITag;
