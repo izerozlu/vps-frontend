@@ -20,8 +20,8 @@
       <AntTimePicker
         class="tag-form__input"
         id="start-time"
-        format="mm:ss"
-        value-format="mm:ss"
+        format="HH:mm:ss"
+        value-format="HH:mm:ss"
         :clear-icon="false"
         :show-now="false"
         v-model:value="tag.startTime"
@@ -34,8 +34,8 @@
       <AntTimePicker
         class="tag-form__input"
         id="end-time"
-        format="mm:ss"
-        value-format="mm:ss"
+        format="HH:mm:ss"
+        value-format="HH:mm:ss"
         :clear-icon="false"
         :show-now="false"
         v-model:value="tag.endTime"

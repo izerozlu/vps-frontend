@@ -34,7 +34,6 @@
           class="patient-detail__video video mb-12 mr-8 flex flex-col items-center w-[600px]"
           v-for="(video, index) of patientStore.patientDetail.videos"
         >
-          <!-- remove this mock src -->
           <video
             class="video__player rounded-xl w-[600px] rounded-b-none"
             :src="video.fileUrl"
