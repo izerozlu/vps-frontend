@@ -94,10 +94,10 @@ import ERoutes from '@/enums/routes';
 import usePatientStore from '@/store/patient';
 import setupSidenavStore from '@/utils/setup-sidenav-store';
 import ITag from '@/interfaces/tag';
-import IVideo from '~/interfaces/video';
-import TagRegistrationModal from '~/components/tag-registration-modal.vue';
-import handleResponse from '~/utils/handle-response';
-import IServerResponse from '~/interfaces/server-response';
+import IVideo from '@/interfaces/video';
+import TagRegistrationModal from '@/components/tag-registration-modal.vue';
+import handleResponse from '@/utils/handle-response';
+import IServerResponse from '@/interfaces/server-response';
 
 const fields = [
   { field: 'birthDate', translationKey: 'birth-date' },

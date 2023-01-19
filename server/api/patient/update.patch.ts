@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
       'tckn',
       'useDrugs',
       'previousDiagnosis',
-      'videos',
+      'videos'
     ];
 
     if (!viableUpdateKeys.includes(key)) {
@@ -43,5 +43,5 @@ export default defineEventHandler(async (event) => {
   body.videos = [];
   body.previousDiagnosis = [];
 
-  return await sendRequest(`/patients/${query.patientId}`, 'PATCH', body);
+  return await sendRequest(event, `/patients/${query.patientId}`, 'PATCH', body);
 });

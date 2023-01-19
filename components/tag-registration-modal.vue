@@ -1,53 +1,53 @@
 <template>
   <AntModal
-    class="tag-registration-modal"
-    :visible="visible"
-    :closable="false"
+    class='tag-registration-modal'
+    :visible='visible'
+    :closable='false'
     :onCancel="() => emit('cancel')"
     :onOk="() => emit('save', tag)"
     :title="t('title')"
   >
-    <div class="tag-form__field">
-      <label class="mr-16 tag-form__label" for="tag">
+    <div class='tag-form__field'>
+      <label class='mr-16 tag-form__label' for='tag'>
         {{ t('tag.tag') }}:
       </label>
-      <AntInput id="tag" class="tag-form__input" v-model:value="tag.tag" />
+      <AntInput id='tag' class='tag-form__input' v-model:value='tag.tag' />
     </div>
-    <div class="tag-form__field">
-      <label class="mr-16 tag-form__label" for="start-time">
+    <div class='tag-form__field'>
+      <label class='mr-16 tag-form__label' for='start-time'>
         {{ t('tag.start-time') }}:
       </label>
       <AntTimePicker
-        class="tag-form__input"
-        id="start-time"
-        format="HH:mm:ss"
-        value-format="HH:mm:ss"
-        :clear-icon="false"
-        :show-now="false"
-        v-model:value="tag.startTime"
+        class='tag-form__input'
+        id='start-time'
+        format='HH:mm:ss'
+        value-format='HH:mm:ss'
+        :clear-icon='false'
+        :show-now='false'
+        v-model:value='tag.startTime'
       />
     </div>
-    <div class="tag-form__field">
-      <label class="mr-16 tag-form__label" for="end-time">
+    <div class='tag-form__field'>
+      <label class='mr-16 tag-form__label' for='end-time'>
         {{ t('tag.end-time') }}:
       </label>
       <AntTimePicker
-        class="tag-form__input"
-        id="end-time"
-        format="HH:mm:ss"
-        value-format="HH:mm:ss"
-        :clear-icon="false"
-        :show-now="false"
-        v-model:value="tag.endTime"
+        class='tag-form__input'
+        id='end-time'
+        format='HH:mm:ss'
+        value-format='HH:mm:ss'
+        :clear-icon='false'
+        :show-now='false'
+        v-model:value='tag.endTime'
       />
     </div>
   </AntModal>
 </template>
 
-<script setup lang="ts">
-import IVideo from '~/interfaces/video';
+<script setup lang='ts'>
+import IVideo from '@/interfaces/video';
 import { useI18n } from 'vue-i18n';
-import ITag from '~/interfaces/tag';
+import ITag from '@/interfaces/tag';
 
 const { t } = useI18n();
 
@@ -61,13 +61,13 @@ const emit = defineEmits<{
 }>();
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 .ant-btn-primary {
   @apply bg-primary-purple;
 }
 </style>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .tag-form__field {
   @apply flex mb-6 w-full min-h-[52px] relative items-center;
 }
@@ -87,7 +87,7 @@ const emit = defineEmits<{
 }
 </style>
 
-<i18n lang="yaml">
+<i18n lang='yaml'>
 tr:
   title: Yeni Etiket
 </i18n>

@@ -1,82 +1,82 @@
 <template>
   <form
-    class="relative video-form overflow-auto"
+    class='relative video-form overflow-auto'
     :class="{ 'opacity-60 pointer-events-none': isFetching }"
     @submit.prevent
   >
     <!-- TODO [ozlui] add required field validation -->
-    <div class="video-form__field h-16 flex items-center">
+    <div class='video-form__field h-16 flex items-center'>
       <AntTooltip
-        :visible="!patientStore.selectedPatient?.id"
-        placement="right"
+        :visible='!patientStore.selectedPatient?.id'
+        placement='right'
       >
         <template #title>
-          <span class="block text-center">
+          <span class='block text-center'>
             {{ t('cannot-submit-without-patient') }}
           </span>
         </template>
-        <PatientSelector @patient-select="videoStore.setSelectedPatient" />
+        <PatientSelector @patient-select='videoStore.setSelectedPatient' />
       </AntTooltip>
     </div>
-    <div class="video-form__field">
-      <label class="mr-16 video-form__label" for="title">
+    <div class='video-form__field'>
+      <label class='mr-16 video-form__label' for='title'>
         {{ t('video.title') }}:
       </label>
       <AntInput
-        id="title"
-        class="video-form__input"
-        v-model:value="videoStore.form.title"
+        id='title'
+        class='video-form__input'
+        v-model:value='videoStore.form.title'
       />
     </div>
-    <div class="video-form__field">
-      <label class="mr-16 video-form__label" for="saved-date">
+    <div class='video-form__field'>
+      <label class='mr-16 video-form__label' for='saved-date'>
         {{ t('video.saved-date') }}:
       </label>
       <AntDatePicker
-        class="video-form__input"
-        id="saved-date"
-        v-model:value="savedDate"
-        :allow-clear="false"
+        class='video-form__input'
+        id='saved-date'
+        v-model:value='savedDate'
+        :allow-clear='false'
       />
     </div>
-    <div class="video-form__field" v-if="!isUpdate">
-      <label class="mr-16 video-form__label" for="file">
+    <div class='video-form__field' v-if='!isUpdate'>
+      <label class='mr-16 video-form__label' for='file'>
         {{ t('video.video') }}:
       </label>
       <AntInput
-        id="file"
-        class="video-form__input"
-        type="file"
-        accept="video/*"
-        ref="videoFileRef"
-        @change="handleVideoFileChange"
+        id='file'
+        class='video-form__input'
+        type='file'
+        accept='video/*'
+        ref='videoFileRef'
+        @change='handleVideoFileChange'
       />
     </div>
     <AntTooltip
-      class="video-form__submit-button-wrapper"
-      placement="left"
-      :visible="!patientStore.selectedPatient?.id"
+      class='video-form__submit-button-wrapper'
+      placement='left'
+      :visible='!patientStore.selectedPatient?.id'
     >
       <template #title>
-        <span class="text-center block">
+        <span class='text-center block'>
           {{ t('cannot-submit-without-patient') }}
         </span>
       </template>
       <AntButton
-        class="video-form__submit-button"
+        class='video-form__submit-button'
         :class="{ 'video-form__submit-button--fetching': isFetching }"
-        :disabled="isFetching || !patientStore.selectedPatient?.id"
-        @click="submitForm"
+        :disabled='isFetching || !patientStore.selectedPatient?.id'
+        @click='submitForm'
       >
-        <CheckCircleOutlined v-if="!isFetching" />
-        <LoadingOutlined class="animate-spin mx-4" v-else />
-        <span v-if="!isFetching">{{ t('submit') }}</span>
+        <CheckCircleOutlined v-if='!isFetching' />
+        <LoadingOutlined class='animate-spin mx-4' v-else />
+        <span v-if='!isFetching'>{{ t('submit') }}</span>
       </AntButton>
     </AntTooltip>
   </form>
 </template>
 
-<script lang="ts" setup>
+<script lang='ts' setup>
 import { useI18n } from 'vue-i18n';
 import dayjs, { Dayjs } from 'dayjs';
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons-vue';
@@ -89,13 +89,13 @@ import useSidenavStore from '@/store/sidenav';
 import setupSidenavStore from '@/utils/setup-sidenav-store';
 import useDiagnosisStore from '@/store/diagnosis';
 import useVideoStore from '@/store/video';
-import IVideo from '~~/interfaces/video';
-import handleResponse from '~/utils/handle-response';
+import IVideo from '@/interfaces/video';
+import handleResponse from '@/utils/handle-response';
 
 definePageMeta({
   title: 'Video Form',
   alias: ERoutes.DIAGNOSIS_FORM,
-  layout: 'with-sidenav',
+  layout: 'with-sidenav'
 });
 
 const { t } = useI18n();
@@ -122,7 +122,7 @@ const savedDate = computed({
   },
   set: (value: Dayjs) => {
     videoStore.form.savedDate = value?.format('YYYY-MM-DD HH:mm:ss');
-  },
+  }
 });
 
 const isUpdate = computed(() => {
@@ -142,20 +142,20 @@ const submitForm = async () => {
   const data = {
     title: videoStore.form.title,
     patient: { id: patientStore.selectedPatient.id },
-    savedDate: videoStore.form.savedDate,
+    savedDate: videoStore.form.savedDate
   };
 
   if (isUpdate.value) {
     await handleResponse(
       $fetch(`/api/video/update?videoId=${videoStore.form.id}`, {
         body: data,
-        method: 'PATCH',
+        method: 'PATCH'
       }),
       {
         success: () => {
           videoStore.resetForm();
           router.push(ERoutes.VIDEO_LIST);
-        },
+        }
       }
     );
   } else {
@@ -171,7 +171,7 @@ const submitForm = async () => {
     try {
       const response = await fetch(`${baseUrl}/videos`, {
         method: 'POST',
-        body: formData,
+        body: formData
       });
       const result = await response.json();
 
@@ -223,7 +223,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .video-form__field {
   @apply flex mb-6 w-min min-h-[52px] relative items-center;
 }
@@ -259,7 +259,7 @@ onUnmounted(() => {
 }
 </style>
 
-<i18n lang="yaml">
+<i18n lang='yaml'>
 tr:
   submit: Gönder
   cannot-submit-without-patient: Hasta seçimi olmadan tanı ekleyemezsiniz.

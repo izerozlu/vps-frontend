@@ -13,7 +13,7 @@ const useVideoStore = defineStore('video', {
     return {
       videoPatientMap: {} as { [patientId: IPatient['id']]: IVideo[] },
       form: {} as IVideo,
-      selectedVideo: {} as IVideo,
+      selectedVideo: {} as IVideo
     };
   },
   actions: {
@@ -53,25 +53,25 @@ const useVideoStore = defineStore('video', {
           const videoList: IVideo[] = response.data.list;
           this.videoPatientMap[patientId] = videoList.map((video, index) => ({
             ...video,
-            key: index,
+            key: index
           }));
         },
         error: () => {
-          toast.error(t('error-messages.diagnosis.fetch'), { timeout: 0 });
-        },
+          toast.error(t('error-messages.video.fetch'), { timeout: 0 });
+        }
       });
       sidenavStore.isLoading = false;
     },
     resetForm() {
       this.form = {};
-    },
+    }
   },
   getters: {
     selectedPatientVideoList(): IVideo[] {
       const patientStore = usePatientStore();
       return this.videoPatientMap[patientStore.selectedPatient.id] || [];
-    },
-  },
+    }
+  }
 });
 
 export default useVideoStore;

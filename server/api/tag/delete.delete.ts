@@ -2,5 +2,5 @@ import sendRequest from '@/server/utils/send-request';
 
 export default defineEventHandler(async (event) => {
   const query = await useQuery(event);
-  return await sendRequest(`/videos/tags/${query.tagId}`, 'DELETE');
+  return await sendRequest(event, `/videos/tags/${query.tagId}`, 'DELETE');
 });

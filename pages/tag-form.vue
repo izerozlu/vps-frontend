@@ -1,29 +1,29 @@
 <template>
   <form
-    class="relative tag-form overflow-auto"
+    class='relative tag-form overflow-auto'
     :class="{ 'opacity-60 pointer-events-none': isFetching }"
     @submit.prevent
   >
-    <div class="tag-form__field h-16 flex items-center">
-      <AntTooltip :visible="!patientStore.selectedPatient?.id" placement="top">
+    <div class='tag-form__field h-16 flex items-center'>
+      <AntTooltip :visible='!patientStore.selectedPatient?.id' placement='top'>
         <template #title>
-          <span class="block text-center">
+          <span class='block text-center'>
             {{ t('cannot-submit-without-patient') }}
           </span>
         </template>
         <PatientSelector
-          class="!mr-4"
-          @patient-select="tagStore.setSelectedPatient"
+          class='!mr-4'
+          @patient-select='tagStore.setSelectedPatient'
         />
       </AntTooltip>
       <AntTooltip
-        :visible="
+        :visible='
           patientStore.selectedPatient?.id && !videoStore.selectedVideo?.id
-        "
-        placement="top"
+        '
+        placement='top'
       >
         <template #title>
-          <span class="block text-center">
+          <span class='block text-center'>
             {{
               patientStore.selectedPatient?.id
                 ? t('cannot-submit-without-video')
@@ -32,58 +32,58 @@
           </span>
         </template>
         <VideoSelector
-          :disabled="!patientStore.selectedPatient?.id"
-          @video-select="tagStore.setSelectedVideo"
+          :disabled='!patientStore.selectedPatient?.id'
+          @video-select='tagStore.setSelectedVideo'
         />
       </AntTooltip>
     </div>
-    <div class="tag-form__field">
-      <label class="mr-16 tag-form__label" for="tag">
+    <div class='tag-form__field'>
+      <label class='mr-16 tag-form__label' for='tag'>
         {{ t('tag.tag') }}:
       </label>
       <AntInput
-        id="tag"
-        class="tag-form__input"
-        v-model:value="tagStore.form.tag"
+        id='tag'
+        class='tag-form__input'
+        v-model:value='tagStore.form.tag'
       />
     </div>
-    <div class="tag-form__field">
-      <label class="mr-16 tag-form__label" for="start-time">
+    <div class='tag-form__field'>
+      <label class='mr-16 tag-form__label' for='start-time'>
         {{ t('tag.start-time') }}:
       </label>
       <AntTimePicker
-        class="tag-form__input"
-        id="start-time"
-        format="HH:mm:ss"
-        value-format="HH:mm:ss"
-        :clear-icon="false"
-        :show-now="false"
-        v-model:value="tagStore.form.startTime"
+        class='tag-form__input'
+        id='start-time'
+        format='HH:mm:ss'
+        value-format='HH:mm:ss'
+        :clear-icon='false'
+        :show-now='false'
+        v-model:value='tagStore.form.startTime'
       />
     </div>
-    <div class="tag-form__field">
-      <label class="mr-16 tag-form__label" for="end-time">
+    <div class='tag-form__field'>
+      <label class='mr-16 tag-form__label' for='end-time'>
         {{ t('tag.end-time') }}:
       </label>
       <AntTimePicker
-        class="tag-form__input"
-        id="end-time"
-        format="HH:mm:ss"
-        value-format="HH:mm:ss"
-        :clear-icon="false"
-        :show-now="false"
-        v-model:value="tagStore.form.endTime"
+        class='tag-form__input'
+        id='end-time'
+        format='HH:mm:ss'
+        value-format='HH:mm:ss'
+        :clear-icon='false'
+        :show-now='false'
+        v-model:value='tagStore.form.endTime'
       />
     </div>
     <AntTooltip
-      class="tag-form__submit-button-wrapper"
-      placement="left"
-      :visible="
+      class='tag-form__submit-button-wrapper'
+      placement='left'
+      :visible='
         !patientStore.selectedPatient?.id || !videoStore.selectedVideo?.id
-      "
+      '
     >
       <template #title>
-        <span class="text-center block">
+        <span class='text-center block'>
           {{
             !patientStore.selectedPatient?.id
               ? t('cannot-submit-without-patient')
@@ -92,24 +92,24 @@
         </span>
       </template>
       <AntButton
-        class="tag-form__submit-button"
+        class='tag-form__submit-button'
         :class="{ 'tag-form__submit-button--fetching': isFetching }"
-        :disabled="
+        :disabled='
           isFetching ||
           !patientStore.selectedPatient?.id ||
           !videoStore.selectedVideo?.id
-        "
-        @click="submitForm"
+        '
+        @click='submitForm'
       >
-        <CheckCircleOutlined v-if="!isFetching" />
-        <LoadingOutlined class="animate-spin mx-4" v-else />
-        <span v-if="!isFetching">{{ t('submit') }}</span>
+        <CheckCircleOutlined v-if='!isFetching' />
+        <LoadingOutlined class='animate-spin mx-4' v-else />
+        <span v-if='!isFetching'>{{ t('submit') }}</span>
       </AntButton>
     </AntTooltip>
   </form>
 </template>
 
-<script lang="ts" setup>
+<script lang='ts' setup>
 import { useI18n } from 'vue-i18n';
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 import useVideoStore from '@/store/video';
@@ -120,14 +120,14 @@ import useTagStore from '@/store/tag';
 import PatientSelector from '@/components/patient-selector.vue';
 import ERoutes from '@/enums/routes';
 import setupSidenavStore from '@/utils/setup-sidenav-store';
-import handleResponse from '~~/utils/handle-response';
-import IServerResponse from '~~/interfaces/server-response';
-import ITag from '~~/interfaces/tag';
+import handleResponse from '@/utils/handle-response';
+import IServerResponse from '@/interfaces/server-response';
+import ITag from '@/interfaces/tag';
 
 definePageMeta({
   title: 'Diagnosis Form',
   alias: ERoutes.DIAGNOSIS_FORM,
-  layout: 'with-sidenav',
+  layout: 'with-sidenav'
 });
 
 const { t } = useI18n();
@@ -153,26 +153,26 @@ const submitForm = async () => {
     await handleResponse(
       $fetch<IServerResponse>(`/api/tag/update?id=${tagStore.form.id}`, {
         body: tagStore.form,
-        method: 'PATCH',
+        method: 'PATCH'
       }),
       {
         success: () => {
           tagStore.resetForm();
           router.push(ERoutes.TAG_LIST);
-        },
+        }
       }
     );
   } else {
     await handleResponse(
       $fetch<IServerResponse>('/api/tag/save', {
         body: tagStore.form,
-        method: 'POST',
+        method: 'POST'
       }),
       {
         success: () => {
           tagStore.resetForm();
           router.push(ERoutes.TAG_LIST);
-        },
+        }
       }
     );
   }
@@ -211,7 +211,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .tag-form__field {
   @apply flex mb-6 w-min min-h-[52px] relative items-center;
 }
@@ -247,7 +247,7 @@ onUnmounted(() => {
 }
 </style>
 
-<i18n lang="yaml">
+<i18n lang='yaml'>
 tr:
   submit: Gönder
   cannot-submit-without-patient: Hasta seçimi olmadan etiket ekleyemezsiniz.

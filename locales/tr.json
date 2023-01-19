@@ -9,7 +9,8 @@
             "fetch": "Sunucudan Tanı getirirken bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz."
         },
         "video": {
-            "save": "Video kaydedilirken bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz."
+            "save": "Video kaydedilirken bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz.",
+            "fetch": "Sunucudan Video getirirken bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz."
         },
         "tag": {
             "fetch": "Sunucudan Etiket getirirken bir sorun oluştu.\nLütfen daha sonra tekrar deneyiniz."

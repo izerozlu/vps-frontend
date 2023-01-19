@@ -9,6 +9,7 @@ const useAuthenticationStore = defineStore('authentication', {
         useCookie(EAuthentication.IS_LOGGED_IN).value === 'true' &&
         useCookie(EAuthentication.USERNAME).value,
       username: useCookie(EAuthentication.USERNAME).value,
+      role: useCookie(EAuthentication.ROLE).value
     };
   },
   actions: {
@@ -16,13 +17,14 @@ const useAuthenticationStore = defineStore('authentication', {
       await handleResponse(
         $fetch<{ status: 'success' | 'fail' }>('/api/authentication/login', {
           method: 'POST',
-          body: { username, password },
+          body: { username, password }
         }),
         {
           success: () => {
             this.username = username;
+            this.role = username;
             this.isLoggedIn = true;
-          },
+          }
         }
       );
     },
@@ -31,18 +33,19 @@ const useAuthenticationStore = defineStore('authentication', {
         await handleResponse(
           $fetch<{ status: 'success' | 'fail' }>('/api/authentication/logout', {
             method: 'POST',
-            body: { username: this.username },
+            body: { username: this.username }
           }),
           {
             success: () => {
               this.username = null;
+              this.role = null;
               this.isLoggedIn = false;
-            },
+            }
           }
         );
       }
-    },
-  },
+    }
+  }
 });
 
 export default useAuthenticationStore;
