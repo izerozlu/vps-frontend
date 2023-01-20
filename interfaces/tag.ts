@@ -6,6 +6,7 @@ interface ITag {
   startTime: string;
   endTime: string;
   video?: { id: IVideo['id'] };
+  user?: { id: number; username: string };
   checkedForRegistration?: boolean;
 }
 

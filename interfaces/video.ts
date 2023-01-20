@@ -8,7 +8,7 @@ interface IVideo {
   fileUrl: string;
   key?: number;
   rawFile?: File;
-  videoTagList?: ITag[];
+  videoTags?: ITag[];
 }
 
 export default IVideo;

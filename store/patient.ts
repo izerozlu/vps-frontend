@@ -2,8 +2,11 @@ import { defineStore } from 'pinia';
 
 import useVideoStore from '@/store/video';
 import useSidenavStore from '@/store/sidenav';
+import useAuthenticationStore from '@/store/authentication';
 
 import IPatient from '@/interfaces/patient';
+import ITag from '@/interfaces/tag';
+import IVideo from '@/interfaces/video';
 import IServerResponse from '@/interfaces/server-response';
 
 import handleResponse from '@/utils/handle-response';
@@ -16,6 +19,12 @@ const usePatientStore = defineStore('patient', {
       query: '',
       selectedPatient: {} as IPatient,
       patientDetail: {} as IPatient,
+      patientVideoTags: {} as {
+        [videoId: number]: {
+          ownTags: ITag[];
+          otherTags: { [username: string]: ITag[] };
+        };
+      },
     };
   },
   actions: {
@@ -60,9 +69,37 @@ const usePatientStore = defineStore('patient', {
       this.patientDetail = this.list.find(
         (patient) => patient.id === patientId
       );
+      this.setVideoTags();
     },
     resetList() {
       this.list = [];
+    },
+    setVideoTags() {
+      const authenticationStore = useAuthenticationStore();
+      const loggedInUsername = authenticationStore.username;
+
+      this.patientDetail.videos.forEach((video: IVideo) => {
+        this.patientVideoTags[video.id] = {
+          ownTags: video.videoTags.filter(
+            (tag: ITag) => tag.user?.username === loggedInUsername
+          ),
+          otherTags: video.videoTags.reduce(
+            (otherTags: { [userId: number]: ITag[] }, tag: ITag) => {
+              const tagUsername = tag.user.username;
+
+              if (tag.user?.username !== loggedInUsername) {
+                otherTags[tagUsername] = [
+                  ...(otherTags[tagUsername] || []),
+                  tag,
+                ];
+              }
+
+              return otherTags;
+            },
+            {}
+          ),
+        };
+      });
     },
   },
   getters: {

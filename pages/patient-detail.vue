@@ -1,8 +1,8 @@
 <template>
-  <div class='patient-detail'>
-    <div class='patient-detail__field field'>
-      <span class='field__label'> {{ t('fields.fullname') }}: </span>
-      <span class='field__value'>
+  <div class="patient-detail">
+    <div class="patient-detail__field field">
+      <span class="field__label"> {{ t('fields.fullname') }}: </span>
+      <span class="field__value">
         {{
           patientStore.patientDetail.name +
           ' ' +
@@ -11,83 +11,113 @@
       </span>
     </div>
     <div
-      class='patient-detail__field field'
-      v-for='{ field, translationKey } of fields'
+      class="patient-detail__field field"
+      v-for="{ field, translationKey } of fields"
     >
-      <span class='field__label'> {{ t(`fields.${translationKey}`) }}: </span>
-      <span class='field__value'>
+      <span class="field__label"> {{ t(`fields.${translationKey}`) }}: </span>
+      <span class="field__value">
         {{ patientStore.patientDetail[field] }}
       </span>
     </div>
-    <div class='patient-detail__field field'>
-      <span class='field__label'> {{ t('fields.diagnosis') }}: </span>
-      <span class='field__value'>
+    <div class="patient-detail__field field">
+      <span class="field__label"> {{ t('fields.diagnosis') }}: </span>
+      <span class="field__value">
         {{ diagnosis }}
       </span>
     </div>
-    <div class='patient-detail__videos mt-12'>
-      <span class='patient-detail__videos-header text-2xl font-bold block mb-4'>
+    <div class="patient-detail__videos mt-12">
+      <span class="patient-detail__videos-header text-2xl font-bold block mb-4">
         {{ t('videos') }}
       </span>
-      <div class='patient-detail__video-list flex flex-wrap'>
+      <div
+        class="patient-detail__video-list flex flex-wrap"
+        :class="{ 'flex-col': isUserExpert }"
+      >
         <div
-          class='patient-detail__video video mb-12 mr-8 flex flex-col items-center w-[600px]'
-          v-for='(video, index) of patientStore.patientDetail.videos'
+          class="patient-detail__video video mb-12 mr-8 flex"
+          :class="{
+            'w-full': isUserExpert,
+            'w-[600px] flex-col items-center': !isUserExpert,
+          }"
+          v-for="(video, index) of patientStore.patientDetail.videos"
         >
-          <video
-            class='video__player rounded-xl w-[600px] rounded-b-none'
-            :src='video.fileUrl'
-            controls
-            @play='(event) => activateVideo({ video, event, refIndex: index })'
-            ref='videoRefs'
-          />
-          <div
-            class='video__properties flex flex-col text-base p-3 mx-4 rounded-xl rounded-t-none w-full h-min'
-          >
-            <span
-              class='video__title font-semibold'
-              :class="{ 'mb-4': video.videoTagList?.length }"
+          <div class="video__left-column" :class="{ 'w-full': !isUserExpert }">
+            <!-- TODO [ozlui] :src="video.fileUrl" -->
+            <video
+              class="video__player rounded-xl w-[600px] rounded-b-none"
+              src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              controls
+              @play="
+                (event) => activateVideo({ video, event, refIndex: index })
+              "
+              ref="videoRefs"
+            />
+            <div
+              class="video__properties flex flex-col text-base p-3 rounded-xl rounded-t-none w-full h-min"
             >
-              {{ video.title }}
-            </span>
-            <div class='video__tags flex flex-wrap'>
-              <button
-                class='video__tag tag rounded-xl mr-2 mb-2 border-2 border-solid p-2 hover:bg-gray-200 active:bg-gray-300'
+              <div
+                class="video__header flex justify-between"
                 :class="{
-                  'bg-american-purple text-white hover:text-black':
-                    !tag.tag || !tag.endTime,
+                  'mb-4':
+                    patientStore.patientVideoTags[video.id]?.ownTags?.length,
                 }"
-                type='button'
-                v-for='tag of video.videoTagList'
-                @click='(event) => activateTag({ tag, video, event })'
               >
-                <span class='tag__name mr-2 font-bold' v-if='tag.tag'>
-                  {{ tag.tag }}:
+                <span class="video__title font-semibold">
+                  {{ video.title }}
                 </span>
-                <span class='tag__no-name font-bold mr-2' v-else>
-                  {{ t('new-tag') }}:
-                </span>
-                <span class='tag__start-time mr-1'>{{ tag.startTime }}</span>
-                <span class='tag__end-time' v-if='tag.endTime'>
-                  - {{ tag.endTime }}
-                </span>
-              </button>
+                <button
+                  class="video__add-tag-button px-2 py-1 border border-primary-purple rounded hover:bg-primary-purple hover:text-white"
+                  @click="(event) => manualAddTag(event, video)"
+                >
+                  {{ t('new-tag') }}
+                </button>
+              </div>
+              <div class="video__tags video__tags flex flex-wrap">
+                <VideoTag
+                  :tag="tag"
+                  v-for="tag of patientStore.patientVideoTags[video.id]
+                    ?.ownTags"
+                  @activate-tag="(event) => activateTag({ tag, video, event })"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="video__right-column video__other-tags px-8 flex flex-col"
+            v-if="isUserExpert"
+          >
+            <div
+              class="other-tags__row mb-4"
+              v-for="(tags, username) of patientStore.patientVideoTags[video.id]
+                ?.otherTags"
+            >
+              <span
+                class="other-tags__username mb-2 block underline underline-dark-400 font-bold"
+              >
+                {{ username }}
+              </span>
+              <VideoTag
+                class="other-tags__tag bg-white"
+                :tag="tag"
+                v-for="tag of tags"
+                @activate-tag="(event) => activateTag({ tag, video, event })"
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
     <TagRegistrationModal
-      :tag='tagRegistration.tag'
-      :video='tagRegistration.video'
-      :visible='tagRegistration.visible'
-      @cancel='cancelTagRegistration'
-      @save='saveTagRegistration'
+      :tag="tagRegistration.tag"
+      :video="tagRegistration.video"
+      :visible="tagRegistration.visible"
+      @cancel="cancelTagRegistration"
+      @save="saveTagRegistration"
     />
   </div>
 </template>
 
-<script lang='ts' setup>
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 
 import ERoutes from '@/enums/routes';
@@ -98,13 +128,16 @@ import IVideo from '@/interfaces/video';
 import TagRegistrationModal from '@/components/tag-registration-modal.vue';
 import handleResponse from '@/utils/handle-response';
 import IServerResponse from '@/interfaces/server-response';
+import useAuthenticationStore from '@/store/authentication';
+import ERole from '@/enums/role';
 
 const fields = [
   { field: 'birthDate', translationKey: 'birth-date' },
-  { field: 'savedDate', translationKey: 'saved-date' }
+  { field: 'savedDate', translationKey: 'saved-date' },
 ];
 
 const patientStore = usePatientStore();
+const authenticationStore = useAuthenticationStore();
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -112,16 +145,18 @@ const router = useRouter();
 definePageMeta({
   title: 'Patient Detail',
   layout: 'with-sidenav',
-  alias: ERoutes.PATIENT_DETAIL
+  alias: ERoutes.PATIENT_DETAIL,
 });
 
 const videoRefs = ref<HTMLVideoElement[]>();
 
-const activeVideo = ref<Partial<{
-  video: IVideo;
-  element: HTMLVideoElement;
-  previousElement: HTMLVideoElement;
-}>>();
+const activeVideo = ref<
+  Partial<{
+    video: IVideo;
+    element: HTMLVideoElement;
+    previousElement: HTMLVideoElement;
+  }>
+>();
 const tagRegistration = ref<{
   tag?: ITag;
   video?: IVideo;
@@ -129,6 +164,8 @@ const tagRegistration = ref<{
 }>({ visible: false });
 
 // Computed
+
+const isUserExpert = computed(() => authenticationStore.role === ERole.EXPERT);
 
 const diagnosis = computed(() => {
   return (
@@ -139,7 +176,7 @@ const diagnosis = computed(() => {
 });
 
 const newTagsOfActiveVideo = computed(() => {
-  return activeVideo.value.video.videoTagList.filter(
+  return activeVideo.value.video.videoTags.filter(
     (tag) => !tag.tag || !tag.endTime
   );
 });
@@ -148,30 +185,45 @@ const newTagsOfActiveVideo = computed(() => {
 
 const sortVideoTags = () => {
   patientStore.patientDetail.videos?.forEach((video) => {
-    video.videoTagList = video.videoTagList.sort((tagA: ITag, tagB: ITag) => {
-      const tagAValue = humanReadableStartTimeToSeconds(tagA.startTime);
-      const tagBValue = humanReadableStartTimeToSeconds(tagB.startTime);
+    video.videoTags = video.videoTags.sort((tagA: ITag, tagB: ITag) => {
+      const tagAValue = humanReadableToSeconds(tagA.startTime);
+      const tagBValue = humanReadableToSeconds(tagB.startTime);
 
       return tagAValue === tagBValue ? 0 : tagAValue > tagBValue ? 1 : -1;
     });
   });
 };
 
-const humanReadableStartTimeToSeconds = (startTime: string): number => {
-  const [hours, minutes, seconds] = startTime.split(':');
-  return Number.parseInt(hours) * 3600 + Number.parseInt(minutes) * 60 + Number.parseInt(seconds);
+const humanReadableToSeconds = (humanReadable: string): number => {
+  const [hours, minutes, seconds] = humanReadable.split(':');
+  return (
+    Number.parseInt(hours) * 3600 +
+    Number.parseInt(minutes) * 60 +
+    Number.parseInt(seconds)
+  );
 };
 
-const activateTag = (
-  {
-    tag,
-    video,
-    event
-  }: {
-    video: IVideo;
-    tag: ITag;
-    event: MouseEvent;
-  }) => {
+const secondsToHumanReadable = (amount: number): string => {
+  const hours = Math.floor(amount / 3600);
+  const minutes = Math.floor((amount - hours * 3600) / 60);
+  const seconds = amount - hours * 3600 - minutes * 60;
+
+  return `${hours < 10 ? '0' + hours : hours}:${
+    minutes < 10 ? '0' + minutes : minutes
+  }:${seconds < 10 ? '0' + seconds : seconds}`;
+};
+
+const activateTag = ({
+  tag,
+  video,
+  event,
+}: {
+  video: IVideo;
+  tag: ITag;
+  event: MouseEvent;
+}) => {
+  console.log(tag.startTime);
+
   setCurrentTimeForVideo(event, tag.startTime);
   if (!tag.tag || !tag.endTime) {
     registerTag(tag, video);
@@ -183,14 +235,14 @@ const setCurrentTimeForVideo = (event: MouseEvent, startTime: string) => {
     .closest('.patient-detail__video')
     .querySelector('video');
 
-  videoElement.currentTime = humanReadableStartTimeToSeconds(startTime);
+  videoElement.currentTime = humanReadableToSeconds(startTime);
 };
 
 const registerTag = (tag: ITag, video: IVideo) => {
   tagRegistration.value = {
     tag: { ...tag },
     video,
-    visible: true
+    visible: true,
   };
 };
 
@@ -199,30 +251,53 @@ const cancelTagRegistration = () => {
 };
 
 const saveTagRegistration = (tag: ITag) => {
-  handleResponse(
-    $fetch<IServerResponse>(`/api/tag/update?id=${tag.id}`, {
-      body: { ...tag, video: { id: tagRegistration.value.video.id } },
-      method: 'PATCH'
-    }),
-    {
-      success: () => {
-        if (tagRegistration.value.video) {
-          const indexOfTag = tagRegistration.value.video.videoTagList.findIndex(
-            (tag) => tag.id === tagRegistration.value.tag.id
-          );
-          tagRegistration.value.video.videoTagList[indexOfTag] = tag;
-        }
+  const isNewTag = !tag.id;
+  if (isNewTag) {
+    handleResponse(
+      $fetch<IServerResponse>('/api/tag/save', {
+        body: { ...tag },
+        method: 'POST',
+      }),
+      {
+        success: (response) => {
+          if (tagRegistration.value.video) {
+            const videoToAddTag = patientStore.patientDetail.videos.find(
+              (video) => video.id === tagRegistration.value.video.id
+            );
+            if (videoToAddTag) {
+              videoToAddTag.videoTags.push(savedTag);
+              patientStore.setVideoTags();
+            }
+          }
+        },
       }
-    }
-  );
+    );
+  } else {
+    handleResponse(
+      $fetch<IServerResponse>(`/api/tag/update?id=${tag.id}`, {
+        body: { ...tag, video: { id: tagRegistration.value.video.id } },
+        method: 'PATCH',
+      }),
+      {
+        success: () => {
+          if (tagRegistration.value.video) {
+            const indexOfTag = tagRegistration.value.video.videoTags.findIndex(
+              (tag) => tag.id === tagRegistration.value.tag.id
+            );
+            tagRegistration.value.video.videoTags[indexOfTag] = tag;
+          }
+        },
+      }
+    );
+  }
   cancelTagRegistration();
 };
 
 const activateVideo = ({
-                         video,
-                         refIndex,
-                         event
-                       }: {
+  video,
+  refIndex,
+  event,
+}: {
   video: IVideo;
   refIndex: number;
   event: Event;
@@ -231,7 +306,7 @@ const activateVideo = ({
   activeVideo.value = {
     video,
     element: videoRefs.value[refIndex],
-    previousElement: activeVideo.value?.element
+    previousElement: activeVideo.value?.element,
   };
   initializeNewTagListener();
 };
@@ -254,10 +329,10 @@ const initializeNewTagListener = () => {
 };
 
 const listenForNewTag = () => {
-  if (!tagRegistration.value.visible) {
+  if (isUserExpert.value && !tagRegistration.value.visible) {
     const newTagToRegister = newTagsOfActiveVideo.value
       .filter((tag) => {
-        const startTimeInSeconds = humanReadableStartTimeToSeconds(tag.startTime);
+        const startTimeInSeconds = humanReadableToSeconds(tag.startTime);
         return (
           !tag.checkedForRegistration &&
           activeVideo.value.element.currentTime >= startTimeInSeconds &&
@@ -274,6 +349,21 @@ const listenForNewTag = () => {
   }
 };
 
+const manualAddTag = (event: MouseEvent, video: IVideo) => {
+  const videoElement: HTMLVideoElement = (event.target as HTMLButtonElement)
+    .closest('.patient-detail__video')
+    .querySelector('video');
+
+  const tag: ITag = {
+    tag: '',
+    startTime: secondsToHumanReadable(videoElement.currentTime),
+    endTime: '',
+    video: { id: video.id },
+  };
+
+  registerTag(tag, video);
+};
+
 // Life Cycle Methods
 
 onMounted(async () => {
@@ -285,13 +375,13 @@ onMounted(async () => {
     sortVideoTags();
   } else {
     router.push({
-      path: ERoutes.SEARCH
+      path: ERoutes.SEARCH,
     });
   }
 });
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .field {
   @apply text-base px-6 py-4 w-[420px];
 
@@ -309,7 +399,7 @@ onMounted(async () => {
 }
 </style>
 
-<i18n lang='yaml'>
+<i18n lang="yaml">
 tr:
   title: Hasta Detayı
   fields:
