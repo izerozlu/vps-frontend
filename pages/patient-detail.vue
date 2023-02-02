@@ -45,10 +45,9 @@
             class="video__left-column min-w-[600px] w-[600px]"
             :class="{ 'w-full': !isUserExpert }"
           >
-            <!-- TODO [ozlui] :src="video.fileUrl" -->
             <video
               class="video__player rounded-xl rounded-b-none"
-              src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              :src="video.fileUrl"
               controls
               @play="
                 (event) => activateVideo({ video, event, refIndex: index })
