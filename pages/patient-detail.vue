@@ -41,10 +41,13 @@
           }"
           v-for="(video, index) of patientStore.patientDetail.videos"
         >
-          <div class="video__left-column" :class="{ 'w-full': !isUserExpert }">
+          <div
+            class="video__left-column min-w-[600px] w-[600px]"
+            :class="{ 'w-full': !isUserExpert }"
+          >
             <!-- TODO [ozlui] :src="video.fileUrl" -->
             <video
-              class="video__player rounded-xl w-[600px] rounded-b-none"
+              class="video__player rounded-xl rounded-b-none"
               src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
               controls
               @play="
@@ -222,8 +225,6 @@ const activateTag = ({
   tag: ITag;
   event: MouseEvent;
 }) => {
-  console.log(tag.startTime);
-
   setCurrentTimeForVideo(event, tag.startTime);
   if (!tag.tag || !tag.endTime) {
     registerTag(tag, video);
@@ -264,7 +265,8 @@ const saveTagRegistration = (tag: ITag) => {
             const videoToAddTag = patientStore.patientDetail.videos.find(
               (video) => video.id === tagRegistration.value.video.id
             );
-            if (videoToAddTag) {
+            const savedTag = response.data;
+            if (videoToAddTag && savedTag) {
               videoToAddTag.videoTags.push(savedTag);
               patientStore.setVideoTags();
             }

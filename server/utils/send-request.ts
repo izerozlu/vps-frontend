@@ -14,7 +14,10 @@ const sendRequest = async (
   const { baseUrl } = useRuntimeConfig();
 
   if (!headers.hasOwnProperty('Authorization')) {
-    const authenticationKey = getCookie(event, EAuthentication.AUTHENTICATION_KEY);
+    const authenticationKey = getCookie(
+      event,
+      EAuthentication.AUTHENTICATION_KEY
+    );
     headers['Authorization'] = `Basic ${authenticationKey}`;
   }
 
@@ -22,16 +25,15 @@ const sendRequest = async (
     response = await fetch(`${baseUrl}${path}`, {
       headers,
       method,
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
     result = await response.json();
-    console.log(result);
   } catch (error) {
     console.error(error);
   }
   return {
     data: result || null,
-    status: response?.status === 200 ? 'success' : 'fail'
+    status: response?.status === 200 ? 'success' : 'fail',
   };
 };
 
